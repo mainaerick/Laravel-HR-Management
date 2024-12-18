@@ -2,9 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Models\Department;
+use App\Models\Employee;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,8 +19,28 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'name' => 'Admin User',
+            'email' => 'admin@example.com',
+            'password' => Hash::make('password'),
         ]);
+
+        $departments = [
+            ['name' => 'Human Resources', 'description' => 'Handles employee-related operations.'],
+            ['name' => 'Development', 'description' => 'Responsible for software development.'],
+            ['name' => 'Marketing', 'description' => 'Oversees marketing campaigns and strategies.'],
+            ['name' => 'Sales', 'description' => 'Manages sales and client relationships.'],
+            ['name' => 'Design', 'description' => 'Focuses on UI/UX and branding designs.'],
+        ];
+
+        foreach ($departments as $department) {
+            Department::create($department);
+        }
+
+        $departments = Department::all();
+
+        Employee::factory(50)->create()->each(function ($employee) use ($departments) {
+            $employee->department_id = $departments->random()->id;
+            $employee->save();
+        });
     }
 }

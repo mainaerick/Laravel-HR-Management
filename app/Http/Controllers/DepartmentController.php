@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Department;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class DepartmentController extends Controller
 {
@@ -12,7 +13,8 @@ class DepartmentController extends Controller
      */
     public function index()
     {
-        //
+        $departments = Department::paginate(10);
+        return Inertia::render('Departments/Index', ['departments' => $departments]);
     }
 
     /**
@@ -20,7 +22,7 @@ class DepartmentController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Departments/Create');
     }
 
     /**
@@ -28,7 +30,13 @@ class DepartmentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+
+        Department::create($validated);
+        return redirect()->route('departments.index');
     }
 
     /**
@@ -44,7 +52,7 @@ class DepartmentController extends Controller
      */
     public function edit(Department $department)
     {
-        //
+        return Inertia::render('Departments/Edit', ['department' => $department]);
     }
 
     /**
@@ -52,7 +60,13 @@ class DepartmentController extends Controller
      */
     public function update(Request $request, Department $department)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+
+        $department->update($validated);
+        return redirect()->route('departments.index');
     }
 
     /**
@@ -60,6 +74,7 @@ class DepartmentController extends Controller
      */
     public function destroy(Department $department)
     {
-        //
+        $department->delete();
+        return redirect()->route('departments.index');
     }
 }

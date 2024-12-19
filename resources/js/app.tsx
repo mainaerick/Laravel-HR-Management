@@ -21,11 +21,11 @@ createInertiaApp({
                 theme={{
                     token: {
                         // Seed Token
-                        colorPrimary: '#00b96b',
+                        colorPrimary: '#7152F3',
                         borderRadius: 2,
 
                         // Alias Token
-                        colorBgContainer: '#f6ffed',
+                        colorBgContainer: '#fff',
                     },
                 }}
             >
@@ -38,11 +38,11 @@ createInertiaApp({
             theme={{
                 token: {
                     // Seed Token
-                    colorPrimary: '#00b96b',
+                    colorPrimary: '#7152F3',
                     borderRadius: 2,
 
                     // Alias Token
-                    colorBgContainer: '#f6ffed',
+                    colorBgContainer: '#fff',
                 },
             }}
         >

@@ -5,10 +5,22 @@ import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
 import { Link, usePage } from "@inertiajs/react";
 import React, { PropsWithChildren, ReactNode, useState } from "react";
 import { Content, Header, Footer } from "antd/es/layout/layout";
-import { Breadcrumb, Layout, Menu, theme } from "antd";
+import {Breadcrumb, Button, Layout, Menu, theme} from "antd";
 import Sider from "antd/es/layout/Sider";
 import {
+    ApartmentOutlined,
+    AppstoreOutlined,
+    CalendarOutlined,
+    CarryOutOutlined,
+    DollarOutlined,
+    LaptopOutlined, MenuFoldOutlined,
+    MenuUnfoldOutlined,
+    ProfileOutlined,
     RightCircleOutlined,
+    ScheduleOutlined,
+    SettingOutlined,
+    SolutionOutlined,
+    TeamOutlined,
     UploadOutlined,
     UserOutlined,
     VideoCameraOutlined,
@@ -32,7 +44,7 @@ export default function Authenticated({
 }: PropsWithChildren<{ header?: ReactNode }>) {
     const user = usePage().props.auth.user;
 
-    const [collapsed, setCollapsed] = useState();
+    const [collapsed, setCollapsed] = useState<boolean>();
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
@@ -206,51 +218,67 @@ export default function Authenticated({
         //
         // </div>
 
-        <Layout style={{ minHeight: "100vh" }}>
-            <Sider collapsible collapsed={collapsed} onCollapse={onCollapse}>
-                <div className="logo" > <img src={"logos/logo.png"} alt={"Logo"}/> </div>
-                <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline">
+        <Layout style={{ minHeight: "100vh",background:"#FFFFFF"}}>
+            <Sider trigger={null} className={"bg-gray-100 ms-2 mt-6 mb-6"} style={{borderRadius:20}}  theme={"light"} collapsible collapsed={collapsed} onCollapse={onCollapse}>
+                <div className="logo mt-6" > <img src={"/logos/logo.png"} alt={"Logo"}/> </div>
+                <Menu className={"bg-gray-100"} style={{border:"0px"}}  defaultSelectedKeys={["1"]} mode="inline">
                     <Menu.Item key="1">
-                        <RightCircleOutlined />
-                        <span>Option 1</span>
+                        <AppstoreOutlined />
+                        <span>Dashboard</span>
                     </Menu.Item>
                     <Menu.Item key="2">
-                        <Icon type="desktop" />
-                        <span>Option 2</span>
+                        <TeamOutlined />
+                        <span>All Employees</span>
                     </Menu.Item>
-                    <SubMenu
-                        key="sub1"
-                        title={
-                            <span>
-                                <Icon type="user" />
-                                <span>User</span>
-                            </span>
-                        }
-                    >
-                        <Menu.Item key="3">Tom</Menu.Item>
-                        <Menu.Item key="4">Bill</Menu.Item>
-                        <Menu.Item key="5">Alex</Menu.Item>
-                    </SubMenu>
-                    <SubMenu
-                        key="sub2"
-                        title={
-                            <span>
-                                <Icon type="team" />
-                                <span>Team</span>
-                            </span>
-                        }
-                    >
-                        <Menu.Item key="6">Team 1</Menu.Item>
-                        <Menu.Item key="8">Team 2</Menu.Item>
-                    </SubMenu>
+                    <Menu.Item key="3">
+                        <ApartmentOutlined />
+                        <span>All Departments</span>
+                    </Menu.Item>
+                    <Menu.Item key="4">
+                        <ScheduleOutlined />
+                        <span>Attendance</span>
+                    </Menu.Item>
+                    <Menu.Item key="5">
+                        <DollarOutlined />
+                        <span>Payroll</span>
+                    </Menu.Item>
+                    <Menu.Item key="6">
+                        <LaptopOutlined />
+                        <span>Jobs</span>
+                    </Menu.Item>
+                    <Menu.Item key="7">
+                        <SolutionOutlined />
+                        <span>Candidates</span>
+                    </Menu.Item>
+                    <Menu.Item key="8">
+                        <ProfileOutlined />
+                        <span>Leaves</span>
+                    </Menu.Item>
                     <Menu.Item key="9">
-                        <Icon type="file" />
-                        <span>File</span>
+                        <CarryOutOutlined />
+                        <span>Holiday</span>
                     </Menu.Item>
+                    <Menu.Item key="10">
+                        <SettingOutlined />
+                        <span>Settings</span>
+                    </Menu.Item>
+
                 </Menu>
+
+
+
             </Sider>
-            <Layout>
-                <Header style={{ background: "#fff", padding: 0 }} />
+            <Layout style={{background:"#FFFFFF"}}>
+                <Header style={{ background: "#FFFFFF", padding: 0 }}> <Button
+                    type="text"
+                    icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+                    onClick={() => setCollapsed(!collapsed)}
+                    style={{
+                        fontSize: '16px',
+                        width: 64,
+                        height: 64,
+                    }}
+                /></Header>
                 <Content style={{ margin: "0 16px" }}>
                     <Breadcrumb style={{ margin: "16px 0" }}>
                         <Breadcrumb.Item>User</Breadcrumb.Item>
@@ -260,13 +288,13 @@ export default function Authenticated({
                         style={{
                             padding: 24,
                             background: "#fff",
-                            minHeight: 360,
+                            minHeight: 600,
                         }}
                     >
                         Bill is a cat.
                     </div>
                 </Content>
-                <Footer style={{ textAlign: "center" }}>
+                <Footer style={{ textAlign: "center",background:"#FFFFFF" }}>
                     Ant Design ©2018 Created by Ant UED
                 </Footer>
             </Layout>

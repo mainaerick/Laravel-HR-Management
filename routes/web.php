@@ -4,6 +4,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 Route::get('/', function () {
@@ -35,7 +36,20 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+Route::get('/logos/{path}', function ($path) {
+    $path = 'public/images/' . $path;
 
+    // Validate the path to prevent directory traversal attacks
+    if (str_contains($path, '..')) {
+        abort(403);
+    }
+
+    if (Storage::exists($path)) {
+        return response()->file(storage_path('app/' . $path));
+    } else {
+        abort(404);
+    }
+})->where('path', '.*');
 
 
 

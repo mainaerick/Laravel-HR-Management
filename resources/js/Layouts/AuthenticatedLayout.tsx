@@ -1,19 +1,19 @@
 import ApplicationLogo from "@/Components/ApplicationLogo";
 import Dropdown from "@/Components/Dropdown";
-import NavLink from "@/Components/NavLink";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
-import { Link, usePage } from "@inertiajs/react";
-import React, { PropsWithChildren, ReactNode, useState } from "react";
-import { Content, Header, Footer } from "antd/es/layout/layout";
-import {Breadcrumb, Button, Layout, Menu, theme} from "antd";
+import {Link, usePage} from "@inertiajs/react";
+import React, {PropsWithChildren, ReactNode, useState} from "react";
+import {Content, Header, Footer} from "antd/es/layout/layout";
+import {Breadcrumb, Button, Col, Flex, Layout, Menu, Row, theme} from "antd";
 import Sider from "antd/es/layout/Sider";
 import {
     ApartmentOutlined,
-    AppstoreOutlined,
+    AppstoreOutlined, BellOutlined,
     CalendarOutlined,
     CarryOutOutlined,
     DollarOutlined,
-    LaptopOutlined, MenuFoldOutlined,
+    LaptopOutlined,
+    MenuFoldOutlined,
     MenuUnfoldOutlined,
     ProfileOutlined,
     RightCircleOutlined,
@@ -27,6 +27,7 @@ import {
 } from "@ant-design/icons";
 import Icon from "antd/es/icon";
 import SubMenu from "antd/es/menu/SubMenu";
+import NavLink from "@/Components/NavLink";
 
 const items = [
     UserOutlined,
@@ -39,21 +40,26 @@ const items = [
     label: `nav ${index + 1}`,
 }));
 export default function Authenticated({
-    header,
-    children,
-}: PropsWithChildren<{ header?: ReactNode }>) {
+                                          header,
+                                          children,
+                                      }: PropsWithChildren<{ header?: ReactNode }>) {
     const user = usePage().props.auth.user;
 
     const [collapsed, setCollapsed] = useState<boolean>();
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
+    const [title, setTitle] = useState<string>();
+    const [description, setDescription] = useState<string>();
     const {
-        token: { colorBgContainer, borderRadiusLG },
+        token: {colorBgContainer, borderRadiusLG},
     } = theme.useToken();
     const onCollapse = (collapsed) => {
         console.log(collapsed);
         setCollapsed(collapsed);
+    };
+
+    const onPageTitleDesc = (title: string, desc: string) => {
     };
     return (
         // <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -218,83 +224,164 @@ export default function Authenticated({
         //
         // </div>
 
-        <Layout style={{ minHeight: "100vh",background:"#FFFFFF"}}>
-            <Sider trigger={null} className={"bg-gray-100 ms-2 mt-6 mb-6"} style={{borderRadius:20}}  theme={"light"} collapsible collapsed={collapsed} onCollapse={onCollapse}>
-                <div className="logo mt-6" > <img src={"/logos/logo.png"} alt={"Logo"}/> </div>
-                <Menu className={"bg-gray-100"} style={{border:"0px"}}  defaultSelectedKeys={["1"]} mode="inline">
-                    <Menu.Item key="1">
-                        <AppstoreOutlined />
+        <Layout style={{minHeight: "100vh", background: "#FFFFFF"}}>
+            <Sider
+                trigger={null}
+                className={"bg-gray-100 ms-2 mt-6 mb-6"}
+                style={{borderRadius: 20}}
+                theme={"light"}
+                collapsible
+                collapsed={collapsed}
+                onCollapse={onCollapse}
+            >
+                <div className="logo mt-6">
+                    {" "}
+                    <img src={"/logos/logo.png"} alt={"Logo"}/>{" "}
+                </div>
+                <Menu
+                    className={"bg-gray-100 pt-8"}
+                    style={{border: "0px"}}
+                    defaultSelectedKeys={["employees"]}
+                    mode="inline"
+                >
+                    <Menu.Item key="dashboard">
+                        <AppstoreOutlined/>
                         <span>Dashboard</span>
                     </Menu.Item>
-                    <Menu.Item key="2">
-                        <TeamOutlined />
-                        <span>All Employees</span>
+                    <Menu.Item key="employees">
+                        <TeamOutlined/>
+                        <span><Link
+                            href={route("employee.index")}
+
+                        >
+                            All Employees
+                        </Link></span>
+
                     </Menu.Item>
-                    <Menu.Item key="3">
-                        <ApartmentOutlined />
+                    <Menu.Item key="departments">
+                        <ApartmentOutlined/>
                         <span>All Departments</span>
                     </Menu.Item>
-                    <Menu.Item key="4">
-                        <ScheduleOutlined />
+                    <Menu.Item key="attendance">
+                        <ScheduleOutlined/>
                         <span>Attendance</span>
                     </Menu.Item>
-                    <Menu.Item key="5">
-                        <DollarOutlined />
+                    <Menu.Item key="payroll">
+                        <DollarOutlined/>
                         <span>Payroll</span>
                     </Menu.Item>
-                    <Menu.Item key="6">
-                        <LaptopOutlined />
+                    <Menu.Item key="jobs">
+                        <LaptopOutlined/>
                         <span>Jobs</span>
                     </Menu.Item>
-                    <Menu.Item key="7">
-                        <SolutionOutlined />
+                    <Menu.Item key="candidates">
+                        <SolutionOutlined/>
                         <span>Candidates</span>
                     </Menu.Item>
-                    <Menu.Item key="8">
-                        <ProfileOutlined />
+                    <Menu.Item key="leaves">
+                        <ProfileOutlined/>
                         <span>Leaves</span>
                     </Menu.Item>
-                    <Menu.Item key="9">
-                        <CarryOutOutlined />
+                    <Menu.Item key="holiday">
+                        <CarryOutOutlined/>
                         <span>Holiday</span>
                     </Menu.Item>
-                    <Menu.Item key="10">
-                        <SettingOutlined />
+                    <Menu.Item key="settings">
+                        <SettingOutlined/>
                         <span>Settings</span>
                     </Menu.Item>
-
                 </Menu>
-
-
-
             </Sider>
-            <Layout style={{background:"#FFFFFF"}}>
-                <Header style={{ background: "#FFFFFF", padding: 0 }}> <Button
-                    type="text"
-                    icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-                    onClick={() => setCollapsed(!collapsed)}
-                    style={{
-                        fontSize: '16px',
-                        width: 64,
-                        height: 64,
-                    }}
-                /></Header>
-                <Content style={{ margin: "0 16px" }}>
-                    <Breadcrumb style={{ margin: "16px 0" }}>
-                        <Breadcrumb.Item>User</Breadcrumb.Item>
-                        <Breadcrumb.Item>Bill</Breadcrumb.Item>
-                    </Breadcrumb>
-                    <div
-                        style={{
-                            padding: 24,
-                            background: "#fff",
-                            minHeight: 600,
-                        }}
-                    >
-                        Bill is a cat.
-                    </div>
+            <Layout className={"pt-6"} style={{background: "#FFFFFF"}}>
+                <Header style={{background: "#ffff",paddingTop:0,  paddingLeft:0}}>
+                    <Row gutter={{xs: 8, sm: 16, md: 24, lg: 32}}>
+                        <Col span={12}><Row>
+                            <Col><Button
+                                type="text"
+                                icon={
+                                    collapsed ? (
+                                        <MenuUnfoldOutlined/>
+                                    ) : (
+                                        <MenuFoldOutlined/>
+                                    )
+                                }
+                                onClick={() => setCollapsed(!collapsed)}
+                                style={{
+                                    fontSize: "16px",
+                                    width: 64,
+                                    height: 64,
+                                }}
+                            /></Col>
+
+                            <Col  className={"hidden sm:flex "} > {header && (
+
+                                <span>{header}</span>
+
+                            )}</Col>
+                        </Row>
+                        </Col>
+                        <Col span={12}>
+                            <Flex justify={"end"} align={"flex-end"} vertical={false}>
+                                <div className={"hidden sm:flex "} ><div><BellOutlined className={"p-2 m-0 bg-gray-200"}  style={{ fontSize: '18px', border:"1 black", borderRadius:6  }}  /></div> </div>
+                                <div className="hidden sm:ms-6 sm:flex sm:items-center">
+                                    <div className="relative ms-3">
+                                        <Dropdown>
+                                            <Dropdown.Trigger>
+                                                                 <span className="inline-flex rounded-md">
+                                             <button
+                                                 type="button"
+                                                 className="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none dark:bg-white border-gray-800 dark:text-gray-400 dark:hover:text-gray-300"
+                                             >
+                                                                         {user.name}
+
+                                                 <svg
+                                                     className="-me-0.5 ms-2 h-4 w-4"
+                                                     xmlns="http://www.w3.org/2000/svg"
+                                                     viewBox="0 0 20 20"
+                                                     fill="currentColor"
+                                                 >
+                                                                           <path
+                                                                               fillRule="evenodd"
+                                                                               d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                                               clipRule="evenodd"
+                                                                           />
+                                                                       </svg>
+                                                                     </button>
+                                                                </span>
+                                            </Dropdown.Trigger>
+
+                                            <Dropdown.Content>
+                                                <Dropdown.Link
+                                                    href={route('profile.edit')}
+                                                >
+                                                    Profile
+                                                </Dropdown.Link>
+                                                <Dropdown.Link
+                                                    href={route('logout')}
+                                                    method="post"
+                                                    as="button"
+                                                >
+                                                    Log Out
+                                                </Dropdown.Link>
+                                            </Dropdown.Content>
+                                        </Dropdown>
+                                    </div>
+                                </div>
+
+                            </Flex>
+                        </Col>
+                    </Row>
+
+                    {" "}
+
+
+                </Header>
+                <Content className={"ps-6 pt-8"} >
+
+
+                    {children}
                 </Content>
-                <Footer style={{ textAlign: "center",background:"#FFFFFF" }}>
+                <Footer style={{textAlign: "center", background: "#FFFFFF"}}>
                     Ant Design ©2018 Created by Ant UED
                 </Footer>
             </Layout>

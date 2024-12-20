@@ -2,10 +2,13 @@ import React from 'react';
 import {Head} from "@inertiajs/react";
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import {Col, Flex, Row, Typography} from "antd";
+import EmployeeTable from "@/Pages/Employees/components/EmployeeTable";
+import {Employee} from "@/Pages/Employees/core/Model";
+import {Department} from "@/Pages/Departments/Core/Model";
 
-type Props = { auth: any, employees: any }
+type Props = { auth: any, employees: any,filters:any,departments:Department[] }
 
-function Index({auth, employees}: Props) {
+function Index({auth, employees,filters,departments}: Props) {
 
     return (
         <AuthenticatedLayout
@@ -26,7 +29,7 @@ function Index({auth, employees}: Props) {
             }
         >
             <Head title="Employees"/>
-            <div>Employees</div>
+            <EmployeeTable data={employees} filters={filters} departments={departments}/>
         </AuthenticatedLayout>
 
     );

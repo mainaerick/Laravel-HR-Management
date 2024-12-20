@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Department;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -14,13 +15,17 @@ class EmployeeController extends Controller
     public function index(Request $request)
     {
         $query = Employee::with('department');
-
-        if ($request->has('department_id')) {
-            $query->where('department_id', $request->get('department_id'));
+        $departments = Department::all();
+        $per_page = 10;
+        if ($request->has('per_page')) {
+            $per_page= $request->get('per_page');
+        }
+        if ($request->has('department_id') && is_array($request->get('department_id'))) {
+            $query->whereIn('department_id', $request->get('department_id'));
         }
 
         if ($request->has('employment_type')) {
-            $query->where('employment_type', $request->get('employment_type'));
+            $query->where('type', $request->get('employment_type'));
         }
 
         if ($request->has('search')) {
@@ -32,10 +37,11 @@ class EmployeeController extends Controller
             });
         }
 
-        $employees= $query->paginate(10);
+        $employees= $query->paginate($per_page);
         return Inertia::render('Employees/Index', [
             'employees' => $employees,
             'filters' => $request->only(['department_id', 'employment_type', 'search']),
+            'departments' => $departments,
         ]);
     }
 
@@ -108,9 +114,10 @@ class EmployeeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Employee $employee)
+    public function destroy($id)
     {
+        $employee = Employee::findOrFail($id);
         $employee->delete();
-        return redirect()->route('employees.index');
+        return  redirect()->back();
     }
 }

@@ -40,6 +40,7 @@ class DatabaseSeeder extends Seeder
 
         Employee::factory(50)->create()->each(function ($employee) use ($departments) {
             $employee->department_id = $departments->random()->id;
+            $employee->employee_id = fake()->randomNumber(4);
             $employee->save();
         });
     }

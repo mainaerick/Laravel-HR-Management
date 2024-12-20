@@ -41,8 +41,15 @@ createInertiaApp({
                     colorPrimary: '#7152F3',
                     borderRadius: 2,
 
+
                     // Alias Token
                     colorBgContainer: '#fff',
+                },
+                components: {
+                    Table: {
+                        headerBg:"#ffffff",
+                        headerColor:"#A2A1A8"
+                    },
                 },
             }}
         >

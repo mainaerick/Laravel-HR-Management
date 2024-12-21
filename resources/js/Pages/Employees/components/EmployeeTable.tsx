@@ -158,6 +158,9 @@ const EmployeeTable: React.FC<{ data: PaginatedData, filters: any, departments: 
         console.log('radio checked', e.target.value);
         setType(e.target.value)
     };
+    const onNewEmployee = ()=>{
+        router.get(route("employee.create"))
+    }
     return (
         <Card className={"mr-6"} style={{borderRadius: "10px"}}>
 
@@ -167,7 +170,7 @@ const EmployeeTable: React.FC<{ data: PaginatedData, filters: any, departments: 
                        onClear={onSearchClear} prefix={<SearchOutlined/>} style={{width: 300, borderRadius: 10}}/>
 
                 <Flex justify={"space-between"} gap={"middle"}>
-                    <Button style={{borderRadius: 10, paddingTop: "20px", paddingBottom: "20px"}} type="primary"
+                    <Button style={{borderRadius: 10, paddingTop: "20px", paddingBottom: "20px"}} type="primary" onClick={onNewEmployee}
                             icon={<PlusOutlined/>}>
                         Add New Employee
                     </Button>

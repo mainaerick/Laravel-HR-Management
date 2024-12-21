@@ -61,16 +61,50 @@ class EmployeeController extends Controller
         $validated = $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:employees',
-            'phone' => 'nullable|string',
+            'email' => 'required|email|unique:employees,email',
+            'phone' => 'nullable|string|max:15',
             'date_of_birth' => 'nullable|date',
+            'marital_status' => 'nullable|string',
+            'gender' => 'nullable|string',
+            'nationality' => 'nullable|string',
+            'address' => 'nullable|string',
+            'city' => 'nullable|string',
+            'state' => 'nullable|string',
+            'zipcode' => 'nullable|string',
             'department_id' => 'nullable|exists:departments,id',
             'designation' => 'nullable|string',
-            'employment_type' => 'required',
+            'employment_type' => 'required|in:permanent,contract,intern',
             'join_date' => 'required|date',
+            'leave_date' => 'nullable|date',
+            'appointment_letter' => 'nullable|file|mimes:pdf',
+            'salary_slips' => 'nullable|array',
+            'salary_slips.*' => 'file|mimes:pdf',
+            'reliving_letter' => 'nullable|file|mimes:pdf',
+            'experience_letter' => 'nullable|file|mimes:pdf',
         ]);
 
+        // Handle file uploads
+        if ($request->hasFile('appointment_letter')) {
+            $validated['appointment_letter'] = $request->file('appointment_letter')->store('employees');
+        }
+
+        if ($request->hasFile('salary_slips')) {
+            $validated['salary_slips'] = array_map(
+                fn($file) => $file->store('employees/salary_slips'),
+                $request->file('salary_slips')
+            );
+        }
+
+        if ($request->hasFile('reliving_letter')) {
+            $validated['reliving_letter'] = $request->file('reliving_letter')->store('employees');
+        }
+
+        if ($request->hasFile('experience_letter')) {
+            $validated['experience_letter'] = $request->file('experience_letter')->store('employees');
+        }
+
         Employee::create($validated);
+
         return redirect()->route('employees.index');
     }
 

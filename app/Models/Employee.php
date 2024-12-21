@@ -10,12 +10,42 @@ class Employee extends Model
 {
 
     use SoftDeletes,HasFactory;
-    protected $fillable = ['employee_id', 'first_name', 'last_name', 'email', 'phone', 'date_of_birth', 'department_id', 'designation', 'type', 'join_date', 'leave_date'];
-
+    protected $fillable = [
+        'employee_id',
+        'first_name',
+        'last_name',
+        'email',
+        'phone',
+        'date_of_birth',
+        'marital_status',
+        'gender',
+        'nationality',
+        'address',
+        'city',
+        'state',
+        'zipcode',
+        'department_id',
+        'designation',
+        'employment_type',
+        'working_days',
+        'join_date',
+        'leave_date',
+        'appointment_letter',
+        'salary_slips',
+        'reliving_letter',
+        'experience_letter',
+    ];
 
 
     public function department()
     {
         return $this->belongsTo(Department::class);
     }
+    protected $casts = [
+        'salary_slips' => 'array',
+        'working_days' => 'array',
+        'date_of_birth' => 'date',
+        'join_date' => 'date',
+        'leave_date' => 'date',
+    ];
 }

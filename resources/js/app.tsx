@@ -39,7 +39,8 @@ createInertiaApp({
                 token: {
                     // Seed Token
                     colorPrimary: '#7152F3',
-                    borderRadius: 2,
+                    borderRadius: 10,
+                    colorBorder:"#A2A1A8",
 
 
                     // Alias Token
@@ -50,6 +51,14 @@ createInertiaApp({
                         headerBg:"#ffffff",
                         headerColor:"#A2A1A8"
                     },
+                    Tabs: {
+                        titleFontSize:17
+
+                    },
+                    Form:{
+                        verticalLabelMargin:"13px 0px"
+                    }
+
                 },
             }}
         >

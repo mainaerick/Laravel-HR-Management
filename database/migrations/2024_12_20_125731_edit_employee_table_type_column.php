@@ -17,7 +17,7 @@ return new class extends Migration
 
             // Add the new columns
             $table->enum('status', ['active', 'inactive', 'terminated'])->after('designation');
-            $table->enum('type', ['office', 'remote'])->after('status');
+            $table->enum('location_type', ['office', 'remote'])->after('status');
         });
     }
 
@@ -28,7 +28,7 @@ return new class extends Migration
     {
         Schema::table('employees', function (Blueprint $table) {
             // Rollback the changes
-            $table->dropColumn(['status', 'type']);
+            $table->dropColumn(['status', 'location_type']);
             $table->enum('employment_type', ['permanent', 'contract', 'intern'])->after('designation');
         });
     }

@@ -6,6 +6,7 @@ use App\Models\Department;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Carbon\Carbon;
 
 class EmployeeController extends Controller
 {
@@ -18,7 +19,7 @@ class EmployeeController extends Controller
         $departments = Department::all();
         $per_page = 10;
         if ($request->has('per_page')) {
-            $per_page= $request->get('per_page');
+            $per_page = $request->get('per_page');
         }
         if ($request->has('department_id') && is_array($request->get('department_id'))) {
             $query->whereIn('department_id', $request->get('department_id'));
@@ -37,7 +38,7 @@ class EmployeeController extends Controller
             });
         }
 
-        $employees= $query->paginate($per_page);
+        $employees = $query->paginate($per_page);
         return Inertia::render('Employees/Index', [
             'employees' => $employees,
             'filters' => $request->only(['department_id', 'employment_type', 'search']),
@@ -50,7 +51,10 @@ class EmployeeController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Employees/Create');
+        $departments = Department::all();
+        return Inertia::render('Employees/Create', [
+            'departments' => $departments,
+        ]);
     }
 
     /**
@@ -58,12 +62,14 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
+//        dd(request()->all());
         $validated = $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
+            'employee_id' => 'required|string|unique:employees,employee_id|max:255',
             'email' => 'required|email|unique:employees,email',
             'phone' => 'nullable|string|max:15',
-            'date_of_birth' => 'nullable|date',
+            'date_of_birth' => 'nullable|array',
             'marital_status' => 'nullable|string',
             'gender' => 'nullable|string',
             'nationality' => 'nullable|string',
@@ -74,14 +80,23 @@ class EmployeeController extends Controller
             'department_id' => 'nullable|exists:departments,id',
             'designation' => 'nullable|string',
             'employment_type' => 'required|in:permanent,contract,intern',
-            'join_date' => 'required|date',
-            'leave_date' => 'nullable|date',
+            'join_date' => 'required|array',
+            'leave_date' => 'nullable|array',
             'appointment_letter' => 'nullable|file|mimes:pdf',
-            'salary_slips' => 'nullable|array',
             'salary_slips.*' => 'file|mimes:pdf',
             'reliving_letter' => 'nullable|file|mimes:pdf',
             'experience_letter' => 'nullable|file|mimes:pdf',
         ]);
+
+        $dateOfBirth = $this->formatDate($request->input('date_of_birth'));
+        $joinDate = $this->formatDate($request->input('join_date'));
+        $leaveDate = $this->formatDate($request->input('leave_date'));
+
+
+        $validated['join_date'] = $joinDate;
+        $validated['leave_date'] = $leaveDate;
+        $validated['date_of_birth'] = $dateOfBirth;
+
 
         // Handle file uploads
         if ($request->hasFile('appointment_letter')) {
@@ -105,7 +120,7 @@ class EmployeeController extends Controller
 
         Employee::create($validated);
 
-        return redirect()->route('employees.index');
+        return redirect()->route('employee.index');
     }
 
     /**
@@ -152,6 +167,19 @@ class EmployeeController extends Controller
     {
         $employee = Employee::findOrFail($id);
         $employee->delete();
-        return  redirect()->back();
+        return redirect()->back();
+    }
+
+    private function formatDate($dateInput)
+    {
+        if (is_array($dateInput) && isset($dateInput['$d'])) {
+            // Extract and format ISO date string
+            return Carbon::parse($dateInput['$d'])->format('Y-m-d');
+        } elseif ($dateInput) {
+            // Fallback for string inputs
+            return Carbon::parse($dateInput)->format('Y-m-d');
+        }
+
+        return null; // Return null if the date is not provided
     }
 }

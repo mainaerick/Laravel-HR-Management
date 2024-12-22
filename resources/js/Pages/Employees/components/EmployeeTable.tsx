@@ -45,9 +45,10 @@ const EmployeeTable: React.FC<{ data: PaginatedData, filters: any, departments: 
                 responsive: ['md'],
             },
             {
-                title: 'Department ID',
+                title: 'Department',
                 dataIndex: 'department_id',
                 key: 'department_id',
+                render:(text,item)=> <span>{item.department_id && departments.find((department)=>department.id===item.department_id).name}</span>
             },
             {
                 title: 'Designation',
@@ -57,7 +58,7 @@ const EmployeeTable: React.FC<{ data: PaginatedData, filters: any, departments: 
             },
             {
                 title: 'Type',
-                dataIndex: 'type',
+                dataIndex: 'location_type',
                 key: 'type',
                 responsive: ['lg'],
             },

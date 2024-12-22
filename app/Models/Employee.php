@@ -26,6 +26,8 @@ class Employee extends Model
         'zipcode',
         'department_id',
         'designation',
+        'status',
+        'location_type',
         'employment_type',
         'working_days',
         'join_date',

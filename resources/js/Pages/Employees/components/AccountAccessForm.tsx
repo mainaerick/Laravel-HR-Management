@@ -8,7 +8,7 @@ function AccountAccessForm({onTabChange}:Props) {
         borderColor: "#A2A1A8"
     }
     return (
-        <Form className={"mt-6"} >
+        <div className={"mt-6"} >
             <Row gutter={16} justify={"space-between"}>
                 <Col span={12}>
                     <Form.Item name="slack_id">
@@ -28,20 +28,8 @@ function AccountAccessForm({onTabChange}:Props) {
                     </Form.Item>
                 </Col>
             </Row>
-            <Flex justify={"end"}>
-                <Form.Item>
-                    <Space>
-                        <Button style={{width: "100px"}} size={"large"} type="default" onClick={()=>onTabChange("3")}>
-                            Back
-                        </Button>
-                        <Button style={{width: "100px"}} size={"large"} type="primary" htmlType="submit">
-                            Add
-                        </Button>
 
-                    </Space>
-                </Form.Item>
-            </Flex>
-        </Form>
+        </div>
     );
 }
 

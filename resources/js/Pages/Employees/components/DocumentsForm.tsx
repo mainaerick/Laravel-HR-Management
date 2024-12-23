@@ -12,12 +12,11 @@ function DocumentsForm({onTabChange}:Props) {
             status: 'done',
         }));
 
+        console.log(files)
         setFileList(files);
     };
 
-    const onFinish = (values: any) => {
-        onTabChange("4")
-    };
+
     return (
         <div className={"mt-6"}  >
             <Row gutter={16} justify={"space-between"}>

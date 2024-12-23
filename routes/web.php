@@ -36,7 +36,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-Route::get('/logos/{path}', function ($path) {
+Route::get('/files/{path}', function ($path) {
     $path = 'public/images/' . $path;
 
     // Validate the path to prevent directory traversal attacks
@@ -51,6 +51,19 @@ Route::get('/logos/{path}', function ($path) {
     }
 })->where('path', '.*');
 
+Route::get('/images/{path}', function ($path) {
+    $path = 'public/images/' . $path;
 
+    // Validate the path to prevent directory traversal attacks
+    if (str_contains($path, '..')) {
+        abort(403);
+    }
+
+    if (Storage::exists($path)) {
+        return response()->file(storage_path('app/' . $path));
+    } else {
+        abort(404);
+    }
+})->where('path', '.*');
 
 require __DIR__.'/auth.php';

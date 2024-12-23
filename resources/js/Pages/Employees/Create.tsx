@@ -98,11 +98,13 @@ function Create({departments}: Props) {
     const handleSubmit = () => {
         form.validateFields()
             .then((values) => {
-                console.log(values)
+                console.log(values['salary_slips'].fileList)
+                values["salary_slip_names"]=values['salary_slips'].fileList.map((file)=>file.name)
                 values['appointment_letter']= values['appointment_letter'].file
-                values['experience_letter']= values['appointment_letter'].file
-                values['reliving_letter']= values['appointment_letter'].file
+                values['experience_letter']= values['experience_letter'].file
+                values['reliving_letter']= values['reliving_letter'].file
                 values['salary_slips']= values['salary_slips'].fileList.map((file)=>file.originFileObj)
+
                 router.post(route("employee.store"),values,{
                     onSuccess: () => {
                         message.success('Form submitted successfully!');
@@ -112,9 +114,9 @@ function Create({departments}: Props) {
                         console.log(errors);
                     },
                 })
-                message.success('Form submitted successfully!');
             })
-            .catch(() => {
+            .catch((e) => {
+                console.log(e)
                 message.error('Please fix the errors before submitting.');
             });
     };

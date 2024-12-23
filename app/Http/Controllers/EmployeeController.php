@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Department;
 use App\Models\Employee;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Carbon\Carbon;
 
@@ -97,26 +98,70 @@ class EmployeeController extends Controller
         $validated['leave_date'] = $leaveDate;
         $validated['date_of_birth'] = $dateOfBirth;
 
-
+        $employeeId = $request->input('employee_id');
         // Handle file uploads
         if ($request->hasFile('appointment_letter')) {
-            $validated['appointment_letter'] = $request->file('appointment_letter')->store('employees');
+            $fileName = 'appointment_letter.pdf';
+            $filePath = 'files/employees/'.$employeeId.'/'.$fileName;
+
+            if (!Storage::disk('public')->exists($filePath)) {
+                $validated['appointment_letter'] = $request->file('appointment_letter')->storeAs(
+                    'files/employees/'.$employeeId,
+                    $fileName,
+                    'public'
+                );
+            }
         }
 
         if ($request->hasFile('salary_slips')) {
-            $validated['salary_slips'] = array_map(
-                fn($file) => $file->store('employees/salary_slips'),
-                $request->file('salary_slips')
-            );
+            $salarySlipFiles = $request->file('salary_slips');
+            $salarySlipNames = $request->input('salary_slip_names'); // Assume names are sent as a parallel array
+
+            if (count($salarySlipFiles) !== count($salarySlipNames)) {
+                return response()->json(['error' => 'Mismatch between salary slips and file names.'], 400);
+            }
+
+            $validated['salary_slips'] = array_map(function ($file, $name) use ($employeeId) {
+                $fileName = $name; // Use the name provided by the frontend
+                $filePath = 'files/employees/'.$employeeId.'/'.$fileName;
+
+                if (!Storage::disk('public')->exists($filePath)) {
+                    return $file->storeAs(
+                        'files/employees/'.$employeeId,
+                        $fileName,
+                        'public'
+                    );
+                }
+            }, $salarySlipFiles, $salarySlipNames);
         }
 
         if ($request->hasFile('reliving_letter')) {
-            $validated['reliving_letter'] = $request->file('reliving_letter')->store('employees');
+            $fileName = 'reliving_letter.pdf';
+            $filePath = 'files/employees/'.$employeeId.'/'.$fileName;
+
+            if (!Storage::disk('public')->exists($filePath)) {
+                $validated['reliving_letter'] = $request->file('reliving_letter')->storeAs(
+                    'files/employees/'.$employeeId,
+                    $fileName,
+                    'public'
+                );
+            }
+
         }
 
         if ($request->hasFile('experience_letter')) {
-            $validated['experience_letter'] = $request->file('experience_letter')->store('employees');
+            $fileName = 'experience_letter.pdf';
+            $filePath = 'files/employees/'.$employeeId.'/'.$fileName;
+
+            if (!Storage::disk('public')->exists($filePath)) {
+                $validated['experience_letter'] = $request->file('experience_letter')->storeAs(
+                    'files/employees/'.$employeeId,
+                    $fileName,
+                    'public'
+                );
+            }
         }
+//        dd( $validated);
 
         Employee::create($validated);
 
@@ -128,7 +173,7 @@ class EmployeeController extends Controller
      */
     public function show(Employee $employee)
     {
-        //
+        return Inertia::render('Employees/Show', ['employee' => $employee]);
     }
 
     /**

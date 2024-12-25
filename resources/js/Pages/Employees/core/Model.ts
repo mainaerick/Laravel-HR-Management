@@ -25,6 +25,8 @@ export interface Employee {
     employee_id?: number | null;
     first_name: string;
     last_name: string;
+    username?:string|null;
+    employment_email?:string|null;
     email: string;
     phone?: string | null;
     date_of_birth?: string | null; // ISO 8601 date format
@@ -36,13 +38,14 @@ export interface Employee {
     state?: string | null;
     zipcode?: string | null;
     department_id?: number | null;
-    department: Department;
+    department_details: Department;
     designation?: string | null;
     employment_type: 'permanent' | 'contract' | 'intern';
     status: string; // e.g., "active"
     location_type: string; // e.g., "office"
     join_date: string; // ISO 8601 date format
     leave_date?: string | null; // ISO 8601 date format
+    working_days?:string|null;
     appointment_letter?: string | null; // File path or URL
     salary_slips?: string[] | null; // Array of file paths or URLs
     reliving_letter?: string | null; // File path or URL

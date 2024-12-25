@@ -14,7 +14,14 @@ import {
     , Radio, RadioChangeEvent, GetProp, notification
 } from 'antd';
 import {Employee} from "@/Pages/Employees/core/Model";
-import {DeleteOutlined, EditOutlined, FilterOutlined, PlusOutlined, SearchOutlined} from "@ant-design/icons";
+import {
+    DeleteOutlined,
+    EditOutlined,
+    EyeOutlined,
+    FilterOutlined,
+    PlusOutlined,
+    SearchOutlined
+} from "@ant-design/icons";
 import {PaginatedData} from "@/Core/Models";
 import {router} from "@inertiajs/react";
 import {SearchProps} from "antd/lib/input";
@@ -72,7 +79,7 @@ const EmployeeTable: React.FC<{ data: PaginatedData, filters: any, departments: 
                 title: 'Action',
                 dataIndex: 'join_date',
                 key: 'join_date',
-                render: (text,item) => <Flex gap={"middle"}><EditOutlined style={{fontSize: "18px"}}/> <DeleteOutlined onClick={()=>handleDelete(item.id)}
+                render: (text,item) => <Flex gap={"middle"}><EyeOutlined onClick={()=> router.get(route("employee.show", item.id))} style={{fontSize: "18px"}}/><EditOutlined style={{fontSize: "18px"}}/> <DeleteOutlined onClick={()=>handleDelete(item.id)}
                                                                                                                   style={{fontSize: "18px"}}/></Flex>,
             },
 

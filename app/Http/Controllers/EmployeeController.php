@@ -110,7 +110,13 @@ class EmployeeController extends Controller
                     $fileName,
                     'public'
                 );
+//                dd($validated['appointment_letter']);
             }
+            else {
+                // Assign the existing file path
+                $validated['appointment_letter'] = $filePath;
+            }
+
         }
 
         if ($request->hasFile('salary_slips')) {
@@ -146,9 +152,7 @@ class EmployeeController extends Controller
                     'public'
                 );
             }
-
         }
-
         if ($request->hasFile('experience_letter')) {
             $fileName = 'experience_letter.pdf';
             $filePath = 'files/employees/'.$employeeId.'/'.$fileName;
@@ -171,8 +175,12 @@ class EmployeeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Employee $employee)
+    public function show( $id)
     {
+
+        $employee = Employee::findOrFail($id);
+        $department = Department::findOrFail( $employee->department_id );
+        $employee->department_details = $department;
         return Inertia::render('Employees/Show', ['employee' => $employee]);
     }
 

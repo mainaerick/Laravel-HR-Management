@@ -24,7 +24,7 @@ Route::get('/dashboard', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('employees', [EmployeeController::class, 'index'])->name('employee.index');
     Route::get('employee/create', [EmployeeController::class, 'create'])->name('employee.create');
-    Route::get('employee/{id}', [EmployeeController::class, 'edit'])->name('employee.edit');
+    Route::get('employee/edit/{id}', [EmployeeController::class, 'edit'])->name('employee.edit');
     Route::get('employee/{id}', [EmployeeController::class, 'show'])->name('employee.show');
     Route::delete('employee/{id}', [EmployeeController::class, 'destroy'])->name('employee.destroy');
     Route::put('employee/{id}', [EmployeeController::class, 'update'])->name('employee.update');

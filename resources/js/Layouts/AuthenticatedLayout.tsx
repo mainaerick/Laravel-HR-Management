@@ -28,6 +28,7 @@ import {
 import Icon from "antd/es/icon";
 import SubMenu from "antd/es/menu/SubMenu";
 import NavLink from "@/Components/NavLink";
+import HRLogo from "@/Layouts/HRLogo";
 
 const items = [
     UserOutlined,
@@ -234,12 +235,13 @@ export default function Authenticated({
                 collapsed={collapsed}
                 onCollapse={onCollapse}
             >
-                <div className="logo mt-6">
+                <div className="logo mt-6 ">
                     {" "}
-                    <img src={"/logos/logo.png"} alt={"Logo"}/>{" "}
+                    <HRLogo/>
+
                 </div>
                 <Menu
-                    className={"bg-gray-100 pt-8"}
+                    className={"bg-gray-100 pt-6"}
                     style={{border: "0px"}}
                     defaultSelectedKeys={["employees"]}
                     mode="inline"

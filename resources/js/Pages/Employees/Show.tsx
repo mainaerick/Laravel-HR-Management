@@ -116,7 +116,8 @@ function Show({employee}: Props) {
                                 defaultSelectedKeys={['1']}
                                 items={sidetabs.map(({key, label}) => ({key, label}))}
                                 onClick={onClickMenuItem}
-                            /></ConfigProvider>
+                            />
+                            </ConfigProvider>
                     </Col>
                     <Col span={16}>
                         {activeComponent}

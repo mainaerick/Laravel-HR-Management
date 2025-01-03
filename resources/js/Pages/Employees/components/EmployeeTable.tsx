@@ -79,8 +79,10 @@ const EmployeeTable: React.FC<{ data: PaginatedData, filters: any, departments: 
                 title: 'Action',
                 dataIndex: 'join_date',
                 key: 'join_date',
-                render: (text,item) => <Flex gap={"middle"}><EyeOutlined onClick={()=> router.get(route("employee.show", item.id))} style={{fontSize: "18px"}}/><EditOutlined style={{fontSize: "18px"}}/> <DeleteOutlined onClick={()=>handleDelete(item.id)}
-                                                                                                                  style={{fontSize: "18px"}}/></Flex>,
+                render: (text,item) => <Flex gap={"middle"}>
+                    <EyeOutlined onClick={()=> router.get(route("employee.show", item.id))} style={{fontSize: "18px"}}/>
+                    <EditOutlined style={{fontSize: "18px"}} onClick={()=> router.get(route("employee.edit", item.id))}/>
+                    <DeleteOutlined onClick={()=>handleDelete(item.id)} style={{fontSize: "18px"}}/></Flex>,
             },
 
         ];

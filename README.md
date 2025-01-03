@@ -136,50 +136,10 @@ This project is an enterprise HR Management System built with **Laravel**, **Ine
 
 ---
 
-## Screenshots
-Include screenshots of key pages and features to showcase the application. Below are some suggestions:
-
-- **Login Page**
-- **Dashboard**
-- **Employee Management**
-- **Attendance Module (when implemented)**
-- **Payroll Module (when implemented)**
-- **Reports Page (when implemented)**
-
-To add screenshots:
-1. Take screenshots of the application.
-2. Save them in the `screenshots/` directory in the project repository.
-3. Link them here with markdown:
-   ```markdown
-   ![Login Page](screenshots/login.png)
-   ![Dashboard](screenshots/dashboard.png)
-   ```
-
----
-
-## Contributing
-
-1. Fork the repository.
-2. Create a new feature branch:
-   ```bash
-   git checkout -b feature/your-feature
-   ```
-3. Commit your changes:
-   ```bash
-   git commit -m 'Add your feature'
-   ```
-4. Push to the branch:
-   ```bash
-   git push origin feature/your-feature
-   ```
-5. Submit a pull request.
-
----
-
 ## To-Do List
 
 ### Completed
-- [x] Authentication module (Laravel Breeze with 2FA).
+- [x] Authentication module.
 - [x] Employee management module.
 
 ### In Progress

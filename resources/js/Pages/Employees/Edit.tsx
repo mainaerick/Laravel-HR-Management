@@ -10,7 +10,28 @@ import TabPane from "antd/es/tabs/TabPane";
 import Authenticated from "@/Layouts/AuthenticatedLayout";
 import {Department} from "@/Pages/Departments/Core/Model";
 import {Employee} from "@/Pages/Employees/core/Model";
+import dayjs from "dayjs";
 type Props = {employee:Employee,departments:Department[]}
+const transformEmployeeModel = (employee) => ({
+    ...employee,
+    date_of_birth: employee.date_of_birth ? dayjs(employee.date_of_birth) : null,
+    join_date: employee.join_date ? dayjs(employee.join_date) : null,
+    leave_date: employee.leave_date ? dayjs(employee.leave_date) : null,
+    created_at: employee.created_at ? dayjs(employee.created_at) : null,
+    updated_at: employee.updated_at ? dayjs(employee.updated_at) : null,
+    appointment_letter: employee.appointment_letter
+        ? [{ uid: '-1', name: 'Appointment Letter', url: employee.appointment_letter, type: 'application/pdf', status: 'done' }]
+        : [],
+    salary_slips: employee.salary_slips
+        ? employee.salary_slips.map((url, index) => ({ uid: `${index}`, name: `Salary Slip ${index + 1}`, url, type: 'application/pdf', status: 'done' }))
+        : [],
+    reliving_letter: employee.reliving_letter
+        ? [{ uid: '-1', name: 'Reliving Letter', url: employee.reliving_letter, type: 'application/pdf', status: 'done' }]
+        : [],
+    experience_letter: employee.experience_letter
+        ? [{ uid: '-1', name: 'Experience Letter', url: employee.experience_letter, type: 'application/pdf', status: 'done' }]
+        : [],
+});
 function Edit({employee,departments}: Props) {
     const [form] = Form.useForm();
 
@@ -36,7 +57,7 @@ function Edit({employee,departments}: Props) {
         {
             key: '3',
             label: 'Documents',
-            children: <DocumentsForm onTabChange={onTabChange}/>,
+            children: <DocumentsForm onTabChange={onTabChange} employee={transformEmployeeModel(employee)}/>,
             icon: <FileTextOutlined/>
         },
         {
@@ -49,7 +70,6 @@ function Edit({employee,departments}: Props) {
     ];
 
     const handleNext = () => {
-        console.log(activeTab)
         const fieldNamesForCurrentTab = {
             '1': ['upload',
                 'first_name',
@@ -88,10 +108,12 @@ function Edit({employee,departments}: Props) {
                 const nextTab = (parseInt(activeTab, 10) + 1).toString();
                 setActiveTab(nextTab);
             })
-            .catch(() => {
+            .catch((e) => {
+                console.log(e)
                 message.error('Please fix the errors before proceeding.');
             });
     };
+
 
     const handleSubmit = () => {
         form.validateFields()
@@ -121,7 +143,9 @@ function Edit({employee,departments}: Props) {
     useEffect(() => {
         console.log(employee)
         if(employee){
-            form.setFieldsValue(employee)
+            form.setFieldsValue(transformEmployeeModel(employee))
+            console.log(employee)
+            // form.setFieldsValue(employee)
         }
 
     }, [employee]);
@@ -144,7 +168,9 @@ function Edit({employee,departments}: Props) {
         }>
             <Head title="Add Employee"/>
             <Card className={"mr-6"}>
-                <Form form={form}  layout={"vertical"}>
+                <Form form={form}  layout={"vertical"} initialValues={{
+                    appointment_letter: [],
+                }}>
                     <Tabs defaultActiveKey="1" onChange={onTabChange} activeKey={activeTab}>
                         {tabs.map((tab, index) => {
                             return (

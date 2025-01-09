@@ -51,7 +51,6 @@ function Create({departments}: Props) {
     ];
 
     const handleNext = () => {
-        console.log(activeTab)
         const fieldNamesForCurrentTab = {
             '1': ['upload',
                 'first_name',
@@ -98,7 +97,6 @@ function Create({departments}: Props) {
     const handleSubmit = () => {
         form.validateFields()
             .then((values) => {
-                console.log(values['salary_slips'].fileList)
                 values["salary_slip_names"]=values['salary_slips'].fileList.map((file)=>file.name)
                 values['appointment_letter']= values['appointment_letter'].file
                 values['experience_letter']= values['experience_letter'].file

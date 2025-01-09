@@ -35,6 +35,7 @@ function PersonalInfoForm({}: Props) {
         width: "100%",
         borderColor: "#A2A1A8"
     }
+    const dateFormat = 'DD/MM/YYYY'; // Define a consistent format
     return (
         <>
             <Form.Item

@@ -1,9 +1,10 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, Col, Flex, Form, Input, Row, Space, Typography} from "antd";
 import Dragger from "antd/es/upload/Dragger";
 import {InboxOutlined} from "@ant-design/icons";
-type Props = {onTabChange:(activeKey:string)=>void}
-function DocumentsForm({onTabChange}:Props) {
+import {Employee} from "@/Pages/Employees/core/Model";
+type Props = {onTabChange:(activeKey:string)=>void, employee:any|undefined}
+function DocumentsForm({onTabChange,employee}:Props) {
     const [fileList, setFileList] = useState([]);
 
     const handleFileChange = (info) => {
@@ -12,10 +13,12 @@ function DocumentsForm({onTabChange}:Props) {
             status: 'done',
         }));
 
-        console.log(files)
         setFileList(files);
     };
 
+    useEffect(() => {
+        console.log(fileList)
+    }, [fileList]);
 
     return (
         <div className={"mt-6"}  >
@@ -28,14 +31,18 @@ function DocumentsForm({onTabChange}:Props) {
                         rules={[
                             { required: true, message: 'Please upload the Appointment Letter' },
                             {
-                                validator: (_, file) =>
-                                    !file || (file.fileList[0]?.type === 'application/pdf' || file.fileList[0]?.type === 'image/jpeg')
+                                validator: (_, fileList) => {
+                                    if (!fileList || !fileList[0]) return Promise.resolve();
+                                    const file = fileList[0].originFileObj || fileList[0];
+                                    const isValidType = file.type === 'application/pdf' || file.type === 'image/jpeg';
+                                    return isValidType
                                         ? Promise.resolve()
-                                        : Promise.reject(new Error('Supported formats: JPEG, PDF')),
-                            },
+                                        : Promise.reject('Only PDF and JPEG files are allowed');
+                                }
+                            }
                         ]}
                     >
-                        <Dragger beforeUpload={() => false} onChange={handleFileChange}>
+                        <Dragger beforeUpload={() => false} onChange={handleFileChange}  defaultFileList={employee?.appointment_letter||[]}>
                             <p className="ant-upload-drag-icon">
                                 <InboxOutlined />
                             </p>
@@ -53,14 +60,18 @@ function DocumentsForm({onTabChange}:Props) {
                         rules={[
                             { required: true, message: 'Please upload the Salary Slips' },
                             {
-                                validator: (_, file) =>
-                                    !file || (file.fileList[0]?.type === 'application/pdf' || file.fileList[0]?.type === 'image/jpeg')
+                                validator: (_, fileList) => {
+                                    if (!fileList || !fileList[0]) return Promise.resolve();
+                                    const file = fileList[0].originFileObj || fileList[0];
+                                    const isValidType = file.type === 'application/pdf' || file.type === 'image/jpeg';
+                                    return isValidType
                                         ? Promise.resolve()
-                                        : Promise.reject(new Error('Supported formats: JPEG, PDF')),
-                            },
+                                        : Promise.reject('Only PDF and JPEG files are allowed');
+                                }
+                            }
                         ]}
                     >
-                        <Dragger beforeUpload={() => false} onChange={handleFileChange}>
+                        <Dragger beforeUpload={() => false} onChange={handleFileChange} defaultFileList={employee?.salary_slips}>
                             <p className="ant-upload-drag-icon">
                                 <InboxOutlined />
                             </p>
@@ -81,14 +92,18 @@ function DocumentsForm({onTabChange}:Props) {
                         rules={[
                             { required: true, message: 'Please upload the Reliving Letter' },
                             {
-                                validator: (_, file) =>
-                                    !file || (file.fileList[0]?.type === 'application/pdf' || file.fileList[0]?.type === 'image/jpeg')
+                                validator: (_, fileList) => {
+                                    if (!fileList || !fileList[0]) return Promise.resolve();
+                                    const file = fileList[0].originFileObj || fileList[0];
+                                    const isValidType = file.type === 'application/pdf' || file.type === 'image/jpeg';
+                                    return isValidType
                                         ? Promise.resolve()
-                                        : Promise.reject(new Error('Supported formats: JPEG, PDF')),
-                            },
+                                        : Promise.reject('Only PDF and JPEG files are allowed');
+                                }
+                            }
                         ]}
                     >
-                        <Dragger beforeUpload={() => false} onChange={handleFileChange}>
+                        <Dragger beforeUpload={() => false} onChange={handleFileChange} defaultFileList={employee?.reliving_letter}>
                             <p className="ant-upload-drag-icon">
                                 <InboxOutlined />
                             </p>
@@ -106,14 +121,18 @@ function DocumentsForm({onTabChange}:Props) {
                         rules={[
                             { required: true, message: 'Please upload the Experience Letter' },
                             {
-                                validator: (_, file) =>
-                                    !file || (file.fileList[0]?.type === 'application/pdf' || file.fileList[0]?.type === 'image/jpeg')
+                                validator: (_, fileList) => {
+                                    if (!fileList || !fileList[0]) return Promise.resolve();
+                                    const file = fileList[0].originFileObj || fileList[0];
+                                    const isValidType = file.type === 'application/pdf' || file.type === 'image/jpeg';
+                                    return isValidType
                                         ? Promise.resolve()
-                                        : Promise.reject(new Error('Supported formats: JPEG, PDF')),
-                            },
+                                        : Promise.reject('Only PDF and JPEG files are allowed');
+                                }
+                            }
                         ]}
                     >
-                        <Dragger beforeUpload={() => false} onChange={handleFileChange}>
+                        <Dragger beforeUpload={() => false} onChange={handleFileChange} defaultFileList={employee?.experience_letter}>
                             <p className="ant-upload-drag-icon">
                                 <InboxOutlined />
                             </p>
@@ -126,5 +145,4 @@ function DocumentsForm({onTabChange}:Props) {
         </div>
     );
 }
-
 export default DocumentsForm;

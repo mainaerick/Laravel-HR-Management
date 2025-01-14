@@ -78,6 +78,7 @@ class EmployeeController extends Controller
             'city' => 'nullable|string',
             'state' => 'nullable|string',
             'zipcode' => 'nullable|string',
+            'working_days' => 'nullable|array',
             'department_id' => 'nullable|exists:departments,id',
             'designation' => 'nullable|string',
             'employment_type' => 'required|in:permanent,contract,intern',
@@ -197,22 +198,46 @@ class EmployeeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Employee $employee)
+    public function update(Request $request,  $id)
     {
         $validated = $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:employees,email,' . $employee->id,
-            'phone' => 'nullable|string',
-            'date_of_birth' => 'nullable|date',
+            'employee_id' => 'required|string|unique:employees,employee_id|max:255',
+            'email' => 'required|email|unique:employees,email',
+            'phone' => 'nullable|string|max:15',
+            'date_of_birth' => 'nullable|array',
+            'marital_status' => 'nullable|string',
+            'gender' => 'nullable|string',
+            'nationality' => 'nullable|string',
+            'address' => 'nullable|string',
+            'city' => 'nullable|string',
+            'state' => 'nullable|string',
+            'zipcode' => 'nullable|string',
+            'working_days' => 'nullable|array',
             'department_id' => 'nullable|exists:departments,id',
             'designation' => 'nullable|string',
-            'employment_type' => 'required',
-            'join_date' => 'required|date',
+            'employment_type' => 'required|in:permanent,contract,intern',
+            'join_date' => 'required|array',
+            'leave_date' => 'nullable|array',
+            'appointment_letter' => 'nullable|file|mimes:pdf',
+            'salary_slips.*' => 'file|mimes:pdf',
+            'reliving_letter' => 'nullable|file|mimes:pdf',
+            'experience_letter' => 'nullable|file|mimes:pdf',
         ]);
+//        dd($request->input('working_days'));
+        $dateOfBirth = $this->formatDate($request->input('date_of_birth'));
+        $joinDate = $this->formatDate($request->input('join_date'));
+        $leaveDate = $this->formatDate($request->input('leave_date'));
 
+        $validated['join_date'] = $joinDate;
+        $validated['leave_date'] = $leaveDate;
+        $validated['date_of_birth'] = $dateOfBirth;
+
+        $employee= Employee::findOrFail($id);
+       dd($validated);
         $employee->update($validated);
-        return redirect()->route('employees.index');
+        return redirect()->route('employee.index');
     }
 
     /**

@@ -88,9 +88,14 @@ function ProfessionalInfoForm({departments}:Props) {
                         name="working_days"
                         rules={[{ required: true, message: 'Please select the Working Days' }]}
                     >
-                        <Select style={inputStyles} size={"large"} placeholder="Select Working Days">
-                            <Select.Option value="mon_fri">Mon-Fri</Select.Option>
-                            <Select.Option value="mon_sat">Mon-Sat</Select.Option>
+                        <Select mode={"multiple"} style={inputStyles} size={"large"} placeholder="Select Working Days">
+                            <Select.Option value="monday">Monday</Select.Option>
+                            <Select.Option value="tuesday">Tuesday</Select.Option>
+                            <Select.Option value="wednesday">Wednesday</Select.Option>
+                            <Select.Option value="thursday">Thursday</Select.Option>
+                            <Select.Option value="friday">Friday</Select.Option>
+                            <Select.Option value="saturday">Saturday</Select.Option>
+                            <Select.Option value="sunday">Sunday</Select.Option>
                         </Select>
                     </Form.Item>
                 </Col>

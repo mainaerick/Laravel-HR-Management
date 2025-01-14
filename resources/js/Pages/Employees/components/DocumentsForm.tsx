@@ -17,7 +17,7 @@ function DocumentsForm({onTabChange,employee}:Props) {
     };
 
     useEffect(() => {
-        console.log(fileList)
+        console.log(employee)
     }, [fileList]);
 
     return (
@@ -42,7 +42,7 @@ function DocumentsForm({onTabChange,employee}:Props) {
                             }
                         ]}
                     >
-                        <Dragger beforeUpload={() => false} onChange={handleFileChange}  defaultFileList={employee?.appointment_letter||[]}>
+                        <Dragger beforeUpload={() => false} onChange={handleFileChange}  defaultFileList={employee?.appointment_letter}>
                             <p className="ant-upload-drag-icon">
                                 <InboxOutlined />
                             </p>

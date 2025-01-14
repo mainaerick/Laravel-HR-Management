@@ -45,7 +45,7 @@ export interface Employee {
     location_type: string; // e.g., "office"
     join_date: string; // ISO 8601 date format
     leave_date?: string | null; // ISO 8601 date format
-    working_days?:string|null;
+    working_days?:string[]|null;
     appointment_letter?: string | null; // File path or URL
     salary_slips?: string[] | null; // Array of file paths or URLs
     reliving_letter?: string | null; // File path or URL

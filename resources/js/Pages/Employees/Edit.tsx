@@ -32,6 +32,8 @@ const transformEmployeeModel = (employee) => ({
         ? [{ uid: '-1', name: 'Experience Letter', url: employee.experience_letter, type: 'application/pdf', status: 'done' }]
         : [],
 });
+
+
 function Edit({employee,departments}: Props) {
     const [form] = Form.useForm();
 
@@ -116,16 +118,17 @@ function Edit({employee,departments}: Props) {
 
 
     const handleSubmit = () => {
+
         form.validateFields()
             .then((values) => {
-                console.log(values['salary_slips'].fileList)
-                values["salary_slip_names"]=values['salary_slips'].fileList.map((file)=>file.name)
+
+                values["salary_slip_names"]=values['salary_slips']?.fileList ? values['salary_slips'].fileList.map((file)=>file.name):values['salary_slips'].map((file)=>file.name)
                 values['appointment_letter']= values['appointment_letter'].file
                 values['experience_letter']= values['experience_letter'].file
                 values['reliving_letter']= values['reliving_letter'].file
-                values['salary_slips']= values['salary_slips'].fileList.map((file)=>file.originFileObj)
+                values['salary_slips']= values['salary_slips']?.fileList?.map((file)=>file?.originFileObj)
 
-                router.post(route("employee.store"),values,{
+                router.post(route("employee.update",{id:employee.id}),values,{
                     onSuccess: () => {
                         message.success('Form submitted successfully!');
                     },

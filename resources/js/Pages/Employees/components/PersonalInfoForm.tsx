@@ -240,7 +240,7 @@ function PersonalInfoForm({setData}: Props) {
                 </Col>
                 <Col span={8}>
                     <Form.Item
-                        name="zip_code"
+                        name="zipcode"
                         rules={[
                             { required: true, message: 'Please enter your ZIP code' },
                             { pattern: /^[0-9]{5}$/, message: 'ZIP code must be 5 digits' },
@@ -249,7 +249,7 @@ function PersonalInfoForm({setData}: Props) {
                         <Input
                             style={inputStyles}
                             placeholder="ZIP Code"
-                            onChange={(e) => setData("zip_code", e.target.value)}
+                            onChange={(e) => setData("zipcode", e.target.value)}
                         />
                     </Form.Item>
                 </Col>

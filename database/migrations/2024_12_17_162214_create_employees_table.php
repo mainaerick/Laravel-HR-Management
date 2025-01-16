@@ -14,8 +14,11 @@ return new class extends Migration
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('employee_id')->nullable();
+            $table->string('profile_pic')->nullable();
             $table->string('first_name');
             $table->string('last_name');
+            $table->string('user_name');
+            $table->string('work_email');
             $table->string('email')->unique();
             $table->string('phone')->nullable();
             $table->date('date_of_birth')->nullable();

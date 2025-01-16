@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Department;
 use App\Models\Employee;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
@@ -236,7 +237,9 @@ class EmployeeController extends Controller
             'employment_type' => 'required|in:permanent,contract,intern',
             'join_date' => 'required|array',
             'leave_date' => 'nullable|array',
-            'appointment_letter.*' => 'nullable|file|mimes:pdf',
+            'appointment_letter' => 'nullable|array',
+            'appointment_letter.*' => 'nullable', // Skip validation for existing files
+            'appointment_letter.*.originFileObj' => 'nullable|file|mimes:pdf|max:2048', // Validate new files
             'salary_slips.*' => 'nullable|array',
             'reliving_letter' => 'nullable|array',
             'experience_letter' => 'nullable|array',
@@ -257,7 +260,6 @@ class EmployeeController extends Controller
         if ($request->hasFile('appointment_letter')) {
             $fileName = 'appointment_letter.pdf';
             $filePath = 'files/employees/'.$employeeId.'/'.$fileName;
-            dd($filePath);
             if (!Storage::disk('public')->exists($filePath)) {
                 $validated['appointment_letter'] = $request->file('appointment_letter')->storeAs(
                     'files/employees/'.$employeeId,
@@ -268,13 +270,12 @@ class EmployeeController extends Controller
             }
             else {
                 // Assign the existing file path
+
                 $validated['appointment_letter'] = $filePath;
             }
 
-        }elseif ($request->has('appointment_letter')){
-//            dd( $validated['appointment_letter']);
-//            $validated['appointment_letter'] = $validated['appointment_letter'];
-            dd( $validated['appointment_letter']);
+        }else{
+            $validated = Arr::except($validated, ['appointment_letter']);
         }
 
         if ($request->hasFile('salary_slips')) {
@@ -297,6 +298,8 @@ class EmployeeController extends Controller
                     );
                 }
             }, $salarySlipFiles, $salarySlipNames);
+        }else{
+            $validated = Arr::except($validated, ['salary_slips']);
         }
 
         if ($request->hasFile('reliving_letter')) {
@@ -310,6 +313,8 @@ class EmployeeController extends Controller
                     'public'
                 );
             }
+        }else{
+            $validated = Arr::except($validated, ['reliving_letter']);
         }
         if ($request->hasFile('experience_letter')) {
             $fileName = 'experience_letter.pdf';
@@ -322,9 +327,11 @@ class EmployeeController extends Controller
                     'public'
                 );
             }
+        }else{
+            $validated = Arr::except($validated, ['experience_letter']);
         }
 
-       dd($validated);
+//       dd($validated);
 
         $employee->update($validated);
         return redirect()->route('employee.index');

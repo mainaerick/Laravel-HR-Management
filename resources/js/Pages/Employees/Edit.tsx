@@ -5,7 +5,7 @@ import {FileTextOutlined, LaptopOutlined, LockOutlined, UserOutlined} from "@ant
 import ProfessionalInfoForm from "@/Pages/Employees/components/ProfessionalInfoForm";
 import DocumentsForm from "@/Pages/Employees/components/DocumentsForm";
 import AccountAccessForm from "@/Pages/Employees/components/AccountAccessForm";
-import {Head, router} from "@inertiajs/react";
+import {Head, router, useForm} from "@inertiajs/react";
 import TabPane from "antd/es/tabs/TabPane";
 import Authenticated from "@/Layouts/AuthenticatedLayout";
 import {Department} from "@/Pages/Departments/Core/Model";
@@ -21,7 +21,7 @@ const transformEmployeeModel = (employee) => ({
     updated_at: employee.updated_at ? dayjs(employee.updated_at) : null,
     appointment_letter: employee.appointment_letter
         ? [{ uid: '-1', name: 'Appointment Letter', url: employee.appointment_letter, type: 'application/pdf', status: 'done' }]
-        : [],
+        : null,
     salary_slips: employee.salary_slips
         ? employee.salary_slips.map((url, index) => ({ uid: `${index}`, name: `Salary Slip ${index + 1}`, url, type: 'application/pdf', status: 'done' }))
         : [],
@@ -36,7 +36,12 @@ const transformEmployeeModel = (employee) => ({
 
 function Edit({employee,departments}: Props) {
     const [form] = Form.useForm();
-
+    const [messageApi, contextHolder] = message.useMessage();
+    const { data, setData, post, processing, errors } = useForm<Employee|any>({
+            ...transformEmployeeModel(employee),
+        _method: "PUT",
+        }
+    )
     const [activeTab, setActiveTab] = useState("1")
     const onTabChange = (activeKey: string) => {
         setActiveTab(activeKey)
@@ -47,25 +52,25 @@ function Edit({employee,departments}: Props) {
         {
             key: '1',
             label: 'Personal Information',
-            children: <PersonalInfoForm/>,
+            children: <PersonalInfoForm setData={setData}/>,
             icon: <UserOutlined/>
         },
         {
             key: '2',
             label: 'Professional Information',
-            children: <ProfessionalInfoForm departments={departments}/>,
+            children: <ProfessionalInfoForm departments={departments} setData={setData}/>,
             icon: <LaptopOutlined/>
         },
         {
             key: '3',
             label: 'Documents',
-            children: <DocumentsForm onTabChange={onTabChange} employee={transformEmployeeModel(employee)}/>,
+            children: <DocumentsForm onTabChange={onTabChange} employee={transformEmployeeModel(employee)} form={form} data={data} setData={setData}/>,
             icon: <FileTextOutlined/>
         },
         {
             key: '4',
             label: 'Account Access',
-            children: <AccountAccessForm onTabChange={onTabChange}/>,
+            children: <AccountAccessForm onTabChange={onTabChange} setData={setData}/>,
             icon: <LockOutlined/>,
 
         },
@@ -117,41 +122,64 @@ function Edit({employee,departments}: Props) {
     };
 
 
-    const handleSubmit = () => {
+    const handleSubmit = (values) => {
 
-        form.validateFields()
-            .then((values) => {
-
-                values["salary_slip_names"]=values['salary_slips']?.fileList ? values['salary_slips'].fileList.map((file)=>file.name):values['salary_slips'].map((file)=>file.name)
-                values['appointment_letter']= values['appointment_letter'].file
-                values['experience_letter']= values['experience_letter'].file
-                values['reliving_letter']= values['reliving_letter'].file
-                values['salary_slips']= values['salary_slips']?.fileList?.map((file)=>file?.originFileObj)
-
-                router.post(route("employee.update",{id:employee.id}),values,{
-                    onSuccess: () => {
-                        message.success('Form submitted successfully!');
-                    },
-                    onError: (errors) => {
-                        message.error('Please fix the errors before submitting.');
-                        console.log(errors);
-                    },
-                })
-            })
-            .catch((e) => {
-                console.log(e)
-                message.error('Please fix the errors before submitting.');
-            });
+        console.log(values)
+        post(route("employee.update", { id: data.id }),{
+            onSuccess: () => {
+                messageApi.open({
+                    type: "success",
+                    content: "Product Updated",
+                });
+            },
+            onProgress: () => {
+                // setLoading(true);
+                messageApi.open({
+                    type: "loading",
+                    content: "Product Updating..",
+                });
+            },
+            onError: (e) => {
+                console .log(e)
+                messageApi.open({
+                    type: "error",
+                    content: "An error occurred",
+                });
+            },
+            onFinish: () => {
+                // setLoading(false);
+            },
+        })
+        // form.validateFields()
+        //     .then((values) => {
+        //
+        //         console.log(values)
+        //
+        //         values["salary_slip_names"]=values['salary_slips']?.fileList ? values['salary_slips'].fileList.map((file)=>file.name):values['salary_slips'].map((file)=>file.name)
+        //         values['appointment_letter']= values['appointment_letter'].file
+        //         values['experience_letter']= values['experience_letter'].file
+        //         values['reliving_letter']= values['reliving_letter'].file
+        //         values['salary_slips']= values['salary_slips']?.fileList?.map((file)=>file?.originFileObj)
+        //
+        //         router.post(route("employee.update",{id:employee.id}),values,{
+        //             onSuccess: () => {
+        //                 message.success('Form submitted successfully!');
+        //             },
+        //             onError: (errors) => {
+        //                 message.error('Please fix the errors before submitting.');
+        //                 console.log(errors);
+        //             },
+        //         })
+        //     })
+        //     .catch((e) => {
+        //         console.log(e)
+        //         message.error('Please fix the errors before submitting.');
+        //     });
     };
-    useEffect(() => {
-        console.log(employee)
-        if(employee){
-            form.setFieldsValue(transformEmployeeModel(employee))
-            console.log(employee)
-            // form.setFieldsValue(employee)
-        }
 
-    }, [employee]);
+    useEffect(() => {
+        console.log(data)
+    }, [data]);
     return (
         <Authenticated header={
             <Flex vertical={true} className={"m-0"}>
@@ -164,16 +192,15 @@ function Edit({employee,departments}: Props) {
 
                 <span><Typography.Text style={{fontSize: 14}}
                                        className="m-0 p-0 leading-tight text-gray-800 dark:text-gray-400">
-                            {"All Employee > Add New Employee"}
+                            {"All Employee > Edit Employee"}
                         </Typography.Text></span>
 
             </Flex>
         }>
+            {contextHolder}
             <Head title="Add Employee"/>
             <Card className={"mr-6"}>
-                <Form form={form}  layout={"vertical"} initialValues={{
-                    appointment_letter: [],
-                }}>
+                <Form onFinish={handleSubmit} layout={"vertical"} initialValues={transformEmployeeModel(data)}>
                     <Tabs defaultActiveKey="1" onChange={onTabChange} activeKey={activeTab}>
                         {tabs.map((tab, index) => {
                             return (
@@ -193,8 +220,8 @@ function Edit({employee,departments}: Props) {
                                                     </Button>
                                                 )}
                                                 {index === tabs.length - 1 && (
-                                                    <Button style={{width: "100px"}} size={"large"} type="primary"
-                                                            onClick={handleSubmit}>
+                                                    <Button htmlType={"submit"} style={{width: "100px"}} size={"large"} type="primary"
+                                                           >
                                                         Submit
                                                     </Button>
                                                 )}

@@ -7,9 +7,9 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 dayjs.extend(customParseFormat)
 const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY', 'DD-MM-YYYY', 'DD-MM-YY'];
 
-type Props = {}
+type Props = {setData:any}
 
-function PersonalInfoForm({}: Props) {
+function PersonalInfoForm({setData}: Props) {
 
     const [fileList, setFileList] = useState([]);
 
@@ -26,6 +26,7 @@ function PersonalInfoForm({}: Props) {
             return file;
         });
 
+        setData('profile_pic',updatedFileList)
         setFileList(updatedFileList);
     };
 
@@ -39,7 +40,7 @@ function PersonalInfoForm({}: Props) {
     return (
         <>
             <Form.Item
-                name="upload"
+                name="profile_pic"
                 valuePropName="fileList"
                 getValueFromEvent={(e) => e?.fileList}
                 rules={[{required: true, message: 'Please upload an image'}]}
@@ -64,17 +65,25 @@ function PersonalInfoForm({}: Props) {
                 <Col span={12}>
                     <Form.Item
                         name="first_name"
-                        rules={[{required: true, message: 'Please enter your first name'}]}
+                        rules={[{ required: true, message: 'Please enter your first name' }]}
                     >
-                        <Input style={inputStyles} placeholder="First Name"/>
+                        <Input
+                            style={inputStyles}
+                            placeholder="First Name"
+                            onChange={(e) => setData("first_name", e.target.value)}
+                        />
                     </Form.Item>
                 </Col>
                 <Col span={12}>
                     <Form.Item
                         name="last_name"
-                        rules={[{required: true, message: 'Please enter your last name'}]}
+                        rules={[{ required: true, message: 'Please enter your last name' }]}
                     >
-                        <Input style={inputStyles} placeholder="Last Name"/>
+                        <Input
+                            style={inputStyles}
+                            placeholder="Last Name"
+                            onChange={(e) => setData("last_name", e.target.value)}
+                        />
                     </Form.Item>
                 </Col>
             </Row>
@@ -84,22 +93,31 @@ function PersonalInfoForm({}: Props) {
                     <Form.Item
                         name="phone"
                         rules={[
-                            {required: true, message: 'Please enter your mobile number'},
-                            {pattern: /^[0-9]+$/, message: 'Phone number must contain only numbers'},
+                            { required: true, message: 'Please enter your mobile number' },
+                            { pattern: /^[0-9]+$/, message: 'Phone number must contain only numbers' },
                         ]}
                     >
-                        <Input style={inputStyles} placeholder="Mobile Number"/>
+                        <Input
+                            style={inputStyles}
+                            placeholder="Mobile Number"
+                            onChange={(e) => setData("phone", e.target.value)}
+                        />
                     </Form.Item>
                 </Col>
                 <Col span={12}>
                     <Form.Item
                         name="email"
                         rules={[
-                            {type: 'email', message: 'Please enter a valid email address'},
-                            {required: true, message: 'Email address is required'},
+                            { type: 'email', message: 'Please enter a valid email address' },
+                            { required: true, message: 'Email address is required' },
                         ]}
                     >
-                        <Input type="email" style={inputStyles} placeholder="Email Address"/>
+                        <Input
+                            type="email"
+                            style={inputStyles}
+                            placeholder="Email Address"
+                            onChange={(e) => setData("email", e.target.value)}
+                        />
                     </Form.Item>
                 </Col>
             </Row>
@@ -108,18 +126,28 @@ function PersonalInfoForm({}: Props) {
                 <Col span={12}>
                     <Form.Item
                         name="date_of_birth"
-                        rules={[{required: true, message: 'Please select your date of birth'}]}
+                        rules={[{ required: true, message: 'Please select your date of birth' }]}
                     >
-                        <DatePicker defaultValue={dayjs('01/01/2015', dateFormatList[0])} format={dateFormatList}
-                                    size={"large"} style={inputStyles} placeholder="Date Of Birth"/>
+                        <DatePicker
+                            format={dateFormatList}
+                            size={"large"}
+                            style={inputStyles}
+                            placeholder="Date Of Birth"
+                            onChange={(date) => setData("date_of_birth", date)}
+                        />
                     </Form.Item>
                 </Col>
                 <Col span={12}>
                     <Form.Item
                         name="marital_status"
-                        rules={[{required: true, message: 'Please select your marital status'}]}
+                        rules={[{ required: true, message: 'Please select your marital status' }]}
                     >
-                        <Select style={inputStyles} size={"large"} placeholder="Marital Status">
+                        <Select
+                            style={inputStyles}
+                            size={"large"}
+                            placeholder="Marital Status"
+                            onChange={(value) => setData("marital_status", value)}
+                        >
                             <Select.Option value="single">Single</Select.Option>
                             <Select.Option value="married">Married</Select.Option>
                         </Select>
@@ -131,9 +159,14 @@ function PersonalInfoForm({}: Props) {
                 <Col span={12}>
                     <Form.Item
                         name="gender"
-                        rules={[{required: true, message: 'Please select your gender'}]}
+                        rules={[{ required: true, message: 'Please select your gender' }]}
                     >
-                        <Select style={inputStyles} size={"large"} placeholder="Gender">
+                        <Select
+                            style={inputStyles}
+                            size={"large"}
+                            placeholder="Gender"
+                            onChange={(value) => setData("gender", value)}
+                        >
                             <Select.Option value="male">Male</Select.Option>
                             <Select.Option value="female">Female</Select.Option>
                         </Select>
@@ -142,9 +175,14 @@ function PersonalInfoForm({}: Props) {
                 <Col span={12}>
                     <Form.Item
                         name="nationality"
-                        rules={[{required: true, message: 'Please select your nationality'}]}
+                        rules={[{ required: true, message: 'Please select your nationality' }]}
                     >
-                        <Select style={inputStyles} size={"large"} placeholder="Nationality">
+                        <Select
+                            style={inputStyles}
+                            size={"large"}
+                            placeholder="Nationality"
+                            onChange={(value) => setData("nationality", value)}
+                        >
                             <Select.Option value="usa">USA</Select.Option>
                             <Select.Option value="india">India</Select.Option>
                         </Select>
@@ -156,9 +194,13 @@ function PersonalInfoForm({}: Props) {
                 <Col span={24}>
                     <Form.Item
                         name="address"
-                        rules={[{required: true, message: 'Please enter your address'}]}
+                        rules={[{ required: true, message: 'Please enter your address' }]}
                     >
-                        <Input style={inputStyles} placeholder="Address"/>
+                        <Input
+                            style={inputStyles}
+                            placeholder="Address"
+                            onChange={(e) => setData("address", e.target.value)}
+                        />
                     </Form.Item>
                 </Col>
             </Row>
@@ -167,9 +209,14 @@ function PersonalInfoForm({}: Props) {
                 <Col span={8}>
                     <Form.Item
                         name="city"
-                        rules={[{required: true, message: 'Please select your city'}]}
+                        rules={[{ required: true, message: 'Please select your city' }]}
                     >
-                        <Select style={inputStyles} size={"large"} placeholder="City">
+                        <Select
+                            style={inputStyles}
+                            size={"large"}
+                            placeholder="City"
+                            onChange={(value) => setData("city", value)}
+                        >
                             <Select.Option value="new_york">New York</Select.Option>
                             <Select.Option value="los_angeles">Los Angeles</Select.Option>
                         </Select>
@@ -178,9 +225,14 @@ function PersonalInfoForm({}: Props) {
                 <Col span={8}>
                     <Form.Item
                         name="state"
-                        rules={[{required: true, message: 'Please select your state'}]}
+                        rules={[{ required: true, message: 'Please select your state' }]}
                     >
-                        <Select style={inputStyles} size={"large"} placeholder="State">
+                        <Select
+                            style={inputStyles}
+                            size={"large"}
+                            placeholder="State"
+                            onChange={(value) => setData("state", value)}
+                        >
                             <Select.Option value="ny">NY</Select.Option>
                             <Select.Option value="ca">CA</Select.Option>
                         </Select>
@@ -190,14 +242,19 @@ function PersonalInfoForm({}: Props) {
                     <Form.Item
                         name="zip_code"
                         rules={[
-                            {required: true, message: 'Please enter your ZIP code'},
-                            {pattern: /^[0-9]{5}$/, message: 'ZIP code must be 5 digits'},
+                            { required: true, message: 'Please enter your ZIP code' },
+                            { pattern: /^[0-9]{5}$/, message: 'ZIP code must be 5 digits' },
                         ]}
                     >
-                        <Input style={inputStyles} placeholder="ZIP Code"/>
+                        <Input
+                            style={inputStyles}
+                            placeholder="ZIP Code"
+                            onChange={(e) => setData("zip_code", e.target.value)}
+                        />
                     </Form.Item>
                 </Col>
             </Row>
+
 
         </>
     );

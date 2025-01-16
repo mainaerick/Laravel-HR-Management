@@ -11,7 +11,7 @@ import TabPane from "antd/es/tabs/TabPane";
 import {Department} from "@/Pages/Departments/Core/Model";
 
 
-type Props = {departments:Department[]}
+type Props = { departments: Department[] }
 
 function Create({departments}: Props) {
     const [form] = Form.useForm();
@@ -38,7 +38,7 @@ function Create({departments}: Props) {
         {
             key: '3',
             label: 'Documents',
-            children: <DocumentsForm onTabChange={onTabChange}/>,
+            children: <DocumentsForm onTabChange={onTabChange} employee={} form={form}/>,
             icon: <FileTextOutlined/>
         },
         {
@@ -97,13 +97,13 @@ function Create({departments}: Props) {
     const handleSubmit = () => {
         form.validateFields()
             .then((values) => {
-                values["salary_slip_names"]=values['salary_slips'].fileList.map((file)=>file.name)
-                values['appointment_letter']= values['appointment_letter'].file
-                values['experience_letter']= values['experience_letter'].file
-                values['reliving_letter']= values['reliving_letter'].file
-                values['salary_slips']= values['salary_slips'].fileList.map((file)=>file.originFileObj)
+                values["salary_slip_names"] = values['salary_slips'].fileList.map((file) => file.name)
+                values['appointment_letter'] = values['appointment_letter'].file
+                values['experience_letter'] = values['experience_letter'].file
+                values['reliving_letter'] = values['reliving_letter'].file
+                values['salary_slips'] = values['salary_slips'].fileList.map((file) => file.originFileObj)
 
-                router.post(route("employee.store"),values,{
+                router.post(route("employee.store"), values, {
                     onSuccess: () => {
                         message.success('Form submitted successfully!');
                     },
@@ -122,22 +122,24 @@ function Create({departments}: Props) {
         <Authenticated header={
             <Flex vertical={true} className={"m-0"}>
 
-                       <span style={{height: 23}}><Typography.Text style={{fontSize: 20}}
-                                                                   className="font-semibold m-0 p-0 leading-tight text-gray-800 dark:text-gray-800">
+                       <span style={{height: 23}}>
+                           <Typography.Text style={{fontSize: 20}} className="font-semibold m-0 p-0 leading-tight text-gray-800 dark:text-gray-800">
                             Add New Employees
-                        </Typography.Text></span>
+                        </Typography.Text>
+                       </span>
 
 
-                <span><Typography.Text style={{fontSize: 14}}
-                                       className="m-0 p-0 leading-tight text-gray-800 dark:text-gray-400">
+                <span>
+                    <Typography.Text style={{fontSize: 14}} className="m-0 p-0 leading-tight text-gray-800 dark:text-gray-400">
                             {"All Employee > Add New Employee"}
-                        </Typography.Text></span>
+                        </Typography.Text>
+                </span>
 
             </Flex>
         }>
             <Head title="Add Employee"/>
             <Card className={"mr-6"}>
-                <Form form={form}  layout={"vertical"}>
+                <Form form={form} layout={"vertical"}>
                     <Tabs defaultActiveKey="1" onChange={onTabChange} activeKey={activeTab}>
                         {tabs.map((tab, index) => {
                             return (
@@ -174,7 +176,6 @@ function Create({departments}: Props) {
 
                 </Form>
             </Card>
-
 
         </Authenticated>
     );

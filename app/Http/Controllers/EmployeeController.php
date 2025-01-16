@@ -6,6 +6,7 @@ use App\Models\Department;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Carbon\Carbon;
 
@@ -191,6 +192,7 @@ class EmployeeController extends Controller
     public function edit($id): \Inertia\Response
     {
         $employee = Employee::findOrFail($id);
+//        dd($employee);
         $departments = Department::all();
         return Inertia::render('Employees/Edit', ['employee' => $employee,'departments'=>$departments]);
     }
@@ -200,11 +202,25 @@ class EmployeeController extends Controller
      */
     public function update(Request $request,  $id)
     {
+//        dd($request->all());
+        $employee= Employee::findOrFail($id);
+
+
         $validated = $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'employee_id' => 'required|string|unique:employees,employee_id|max:255',
-            'email' => 'required|email|unique:employees,email',
+            'employee_id' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('employees', 'employee_id')->ignore($employee->id),
+            ],
+            'email' =>  [
+            'required',
+                'email',
+                'max:255',
+                Rule::unique('employees', 'employee_id')->ignore($employee->id),
+            ],
             'phone' => 'nullable|string|max:15',
             'date_of_birth' => 'nullable|array',
             'marital_status' => 'nullable|string',
@@ -220,10 +236,11 @@ class EmployeeController extends Controller
             'employment_type' => 'required|in:permanent,contract,intern',
             'join_date' => 'required|array',
             'leave_date' => 'nullable|array',
-            'appointment_letter' => 'nullable|file|mimes:pdf',
-            'salary_slips.*' => 'file|mimes:pdf',
-            'reliving_letter' => 'nullable|file|mimes:pdf',
-            'experience_letter' => 'nullable|file|mimes:pdf',
+            'appointment_letter.*' => 'nullable|file|mimes:pdf',
+            'salary_slips.*' => 'nullable|array',
+            'reliving_letter' => 'nullable|array',
+            'experience_letter' => 'nullable|array',
+            'profile_pic' => 'nullable|array',
         ]);
 //        dd($request->input('working_days'));
         $dateOfBirth = $this->formatDate($request->input('date_of_birth'));
@@ -234,8 +251,81 @@ class EmployeeController extends Controller
         $validated['leave_date'] = $leaveDate;
         $validated['date_of_birth'] = $dateOfBirth;
 
-        $employee= Employee::findOrFail($id);
+        $employeeId = $request->input('employee_id');
+
+
+        if ($request->hasFile('appointment_letter')) {
+            $fileName = 'appointment_letter.pdf';
+            $filePath = 'files/employees/'.$employeeId.'/'.$fileName;
+            dd($filePath);
+            if (!Storage::disk('public')->exists($filePath)) {
+                $validated['appointment_letter'] = $request->file('appointment_letter')->storeAs(
+                    'files/employees/'.$employeeId,
+                    $fileName,
+                    'public'
+                );
+
+            }
+            else {
+                // Assign the existing file path
+                $validated['appointment_letter'] = $filePath;
+            }
+
+        }elseif ($request->has('appointment_letter')){
+//            dd( $validated['appointment_letter']);
+//            $validated['appointment_letter'] = $validated['appointment_letter'];
+            dd( $validated['appointment_letter']);
+        }
+
+        if ($request->hasFile('salary_slips')) {
+            $salarySlipFiles = $request->file('salary_slips');
+            $salarySlipNames = $request->input('salary_slip_names'); // Assume names are sent as a parallel array
+
+            if (count($salarySlipFiles) !== count($salarySlipNames)) {
+                return response()->json(['error' => 'Mismatch between salary slips and file names.'], 400);
+            }
+
+            $validated['salary_slips'] = array_map(function ($file, $name) use ($employeeId) {
+                $fileName = $name; // Use the name provided by the frontend
+                $filePath = 'files/employees/'.$employeeId.'/'.$fileName;
+
+                if (!Storage::disk('public')->exists($filePath)) {
+                    return $file->storeAs(
+                        'files/employees/'.$employeeId,
+                        $fileName,
+                        'public'
+                    );
+                }
+            }, $salarySlipFiles, $salarySlipNames);
+        }
+
+        if ($request->hasFile('reliving_letter')) {
+            $fileName = 'reliving_letter.pdf';
+            $filePath = 'files/employees/'.$employeeId.'/'.$fileName;
+//            dd($filePath);
+            if (!Storage::disk('public')->exists($filePath)) {
+                $validated['reliving_letter'] = $request->file('reliving_letter')->storeAs(
+                    'files/employees/'.$employeeId,
+                    $fileName,
+                    'public'
+                );
+            }
+        }
+        if ($request->hasFile('experience_letter')) {
+            $fileName = 'experience_letter.pdf';
+            $filePath = 'files/employees/'.$employeeId.'/'.$fileName;
+
+            if (!Storage::disk('public')->exists($filePath)) {
+                $validated['experience_letter'] = $request->file('experience_letter')->storeAs(
+                    'files/employees/'.$employeeId,
+                    $fileName,
+                    'public'
+                );
+            }
+        }
+
        dd($validated);
+
         $employee->update($validated);
         return redirect()->route('employee.index');
     }

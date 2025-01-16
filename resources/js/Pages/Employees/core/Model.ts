@@ -25,6 +25,7 @@ export interface Employee {
     employee_id?: number | null;
     first_name: string;
     last_name: string;
+    profile_pic:any;
     username?:string|null;
     employment_email?:string|null;
     email: string;

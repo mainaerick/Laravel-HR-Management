@@ -1,6 +1,7 @@
 import React from 'react';
 import {Button, Col, DatePicker, Flex, Form, Input, Row, Select, Space} from "antd";
 import {Department} from "@/Pages/Departments/Core/Model";
+import dayjs from "dayjs";
 
 type Props = {departments:Department[],setData:any}
 function ProfessionalInfoForm({departments,setData}:Props) {
@@ -141,7 +142,7 @@ function ProfessionalInfoForm({departments,setData}:Props) {
                             size={"large"}
                             style={inputStyles}
                             placeholder="Select Joining Date"
-                            onChange={(date) => setData("join_date", date)}
+                            onChange={(date) => setData("join_date", date ? dayjs(dayjs(date).format("YYYY-MM-DD")) : null)}
                         />
                     </Form.Item>
                 </Col>

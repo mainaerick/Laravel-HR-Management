@@ -22,7 +22,7 @@ import {Department} from "@/Pages/Departments/Core/Model";
 
 export interface Employee {
     id: number;
-    employee_id?: number | null;
+    employee_id?: string | null;
     first_name: string;
     last_name: string;
     profile_pic:any;
@@ -49,6 +49,7 @@ export interface Employee {
     working_days?:string[]|null;
     appointment_letter?: string | null; // File path or URL
     salary_slips?: string[] | null; // Array of file paths or URLs
+    salary_slip_names?:[]| null;
     reliving_letter?: string | null; // File path or URL
     experience_letter?: string | null; // File path or URL
     created_at: string; // ISO 8601 date format

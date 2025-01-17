@@ -41,7 +41,6 @@ return new class extends Migration
             $table->string('experience_letter')->nullable();
             $table->timestamps();
             $table->softDeletes();
-
         });
     }
 

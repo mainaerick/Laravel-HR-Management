@@ -7,24 +7,19 @@ type Props = {onTabChange:(activeKey:string)=>void, employee:any|undefined,form:
 function DocumentsForm({onTabChange,employee,form,data,setData}:Props) {
 
     const handleFileChange = (fieldName, info) => {
-        // console.log(info)
+        console.log(info)
         if (info.file) {
             // const files = info.fileList.map((file) => ({
             //     ...file,
             //     status: 'done',
             // }));
             if (fieldName === 'salary_slips') {
-                const files = info.fileList.map((file) => ({
-                    ...file,
-                    status: 'done',
-                }));
+                const files = info.fileList.map((file) => file.originFileObj || file)
                 setData(fieldName, files);
+
             }
             else {
-                const files = info.fileList.map((file) => ({
-                    ...file,
-                    status: 'done',
-                }));
+
                 setData(fieldName, info.fileList.map((file) => file.originFileObj || file));
                 // setData(fieldName, files);
             }

@@ -48,11 +48,13 @@ function PersonalInfoForm({setData}: Props) {
                 <Upload
                     accept="image/*"
                     listType="picture-card"
+                    multiple={false}
+                    maxCount={1}
                     fileList={fileList}
                     beforeUpload={() => false} // Prevent auto-upload
                     onChange={handleUploadChange}
                 >
-                    {fileList.length >= 1 ? null : (
+                    {fileList?.length >= 1 ? null : (
                         <div>
                             <PlusOutlined/>
                             <div style={{marginTop: 8}}>Upload</div>
@@ -133,7 +135,7 @@ function PersonalInfoForm({setData}: Props) {
                             size={"large"}
                             style={inputStyles}
                             placeholder="Date Of Birth"
-                            onChange={(date) => setData("date_of_birth", date)}
+                            onChange={(date) => setData("date_of_birth", date ? dayjs(date) : null)}
                         />
                     </Form.Item>
                 </Col>

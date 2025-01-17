@@ -19,9 +19,12 @@ const transformEmployeeModel = (employee) => ({
     leave_date: employee.leave_date ? dayjs(employee.leave_date) : null,
     created_at: employee.created_at ? dayjs(employee.created_at) : null,
     updated_at: employee.updated_at ? dayjs(employee.updated_at) : null,
+    profile_pic:employee.profile_pic
+        ? [{ uid: '-1', name: 'Appointment Letter', url: employee.appointment_letter, type: 'application/pdf', status: 'done' }]
+        : [],
     appointment_letter: employee.appointment_letter
         ? [{ uid: '-1', name: 'Appointment Letter', url: employee.appointment_letter, type: 'application/pdf', status: 'done' }]
-        : null,
+        : [],
     salary_slips: employee.salary_slips
         ? employee.salary_slips.map((url, index) => ({ uid: `${index}`, name: `Salary Slip ${index + 1}`, url, type: 'application/pdf', status: 'done' }))
         : [],
@@ -37,9 +40,9 @@ const transformEmployeeModel = (employee) => ({
 function Edit({employee,departments}: Props) {
     const [form] = Form.useForm();
     const [messageApi, contextHolder] = message.useMessage();
-    const { data, setData, post, processing, errors } = useForm<Employee|any>({
+    const { data, setData, post, processing, errors }:any = useForm<Employee|any>({
             ...transformEmployeeModel(employee),
-        _method: "PUT",
+            _method: "PUT",
         }
     )
     const [activeTab, setActiveTab] = useState("1")
@@ -124,7 +127,9 @@ function Edit({employee,departments}: Props) {
 
     const handleSubmit = (values) => {
 
-        console.log(values)
+        console.log(data.salary_slips.map((file) => file.name))
+        const salaryslipsfilenames = data.salary_slips.map((file) => file.name)
+        setData("salary_slip_names", salaryslipsfilenames);
         post(route("employee.update", { id: data.id }),{
             onSuccess: () => {
                 messageApi.open({
@@ -200,7 +205,7 @@ function Edit({employee,departments}: Props) {
             {contextHolder}
             <Head title="Add Employee"/>
             <Card className={"mr-6"}>
-                <Form onFinish={handleSubmit} layout={"vertical"} initialValues={transformEmployeeModel(data)}>
+                <Form onFinish={handleSubmit} layout={"vertical"} initialValues={data}>
                     <Tabs defaultActiveKey="1" onChange={onTabChange} activeKey={activeTab}>
                         {tabs.map((tab, index) => {
                             return (

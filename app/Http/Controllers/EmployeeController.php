@@ -206,14 +206,12 @@ class EmployeeController extends Controller
 //        dd($request->all());
         $employee= Employee::findOrFail($id);
 
-
         $validated = $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'employee_id' => [
                 'required',
-                'string',
-                'max:255',
+                'int',
                 Rule::unique('employees', 'employee_id')->ignore($employee->id),
             ],
             'email' =>  [
@@ -236,19 +234,28 @@ class EmployeeController extends Controller
             'designation' => 'nullable|string',
             'employment_type' => 'required|in:permanent,contract,intern',
             'join_date' => 'required|array',
-            'leave_date' => 'nullable|array',
+            'leave_date' => 'nullable|string',
             'appointment_letter' => 'nullable|array',
             'appointment_letter.*' => 'nullable', // Skip validation for existing files
             'appointment_letter.*.originFileObj' => 'nullable|file|mimes:pdf|max:2048', // Validate new files
-            'salary_slips.*' => 'nullable|array',
+            'salary_slips.*.originFileObj' => 'nullable|file|mimes:pdf|max:2048',
             'reliving_letter' => 'nullable|array',
+            'reliving_letter.*' => 'nullable', // Skip validation for existing files
+            'reliving_letter.*.originFileObj' => 'nullable|file|mimes:pdf|max:2048', // Validate new files
             'experience_letter' => 'nullable|array',
+            'experience_letter.*' => 'nullable', // Skip validation for existing files
+            'experience_letter.*.originFileObj' => 'nullable|file|mimes:pdf|max:2048', // Validate new files
             'profile_pic' => 'nullable|array',
+            'profile_pic.*' => 'nullable', // Skip validation for existing files
+            'profile_pic.*.originFileObj' => 'nullable|file|mimes:pdf|max:2048', // Validate new files
+
         ]);
-//        dd($request->input('working_days'));
-        $dateOfBirth = $this->formatDate($request->input('date_of_birth'));
-        $joinDate = $this->formatDate($request->input('join_date'));
-        $leaveDate = $this->formatDate($request->input('leave_date'));
+//        dd($validated['date_of_birth']);
+        $dateOfBirth = $this->formatDate($validated['date_of_birth']);
+//        dd($dateOfBirth);
+
+        $joinDate = $this->formatDate($validated['join_date']);
+        $leaveDate = $this->formatDate($validated['leave_date']);
 
         $validated['join_date'] = $joinDate;
         $validated['leave_date'] = $leaveDate;
@@ -256,7 +263,26 @@ class EmployeeController extends Controller
 
         $employeeId = $request->input('employee_id');
 
+        if ($request->hasFile('appointment_letter')) {
+            $fileName = 'appointment_letter.pdf';
+            $filePath = 'files/employees/'.$employeeId.'/'.$fileName;
+            if (!Storage::disk('public')->exists($filePath)) {
+                $validated['appointment_letter'] = $request->file('appointment_letter')->storeAs(
+                    'files/employees/'.$employeeId,
+                    $fileName,
+                    'public'
+                );
 
+            }
+            else {
+                // Assign the existing file path
+
+                $validated['appointment_letter'] = $filePath;
+            }
+
+        }else{
+            $validated = Arr::except($validated, ['appointment_letter']);
+        }
         if ($request->hasFile('appointment_letter')) {
             $fileName = 'appointment_letter.pdf';
             $filePath = 'files/employees/'.$employeeId.'/'.$fileName;
@@ -331,7 +357,7 @@ class EmployeeController extends Controller
             $validated = Arr::except($validated, ['experience_letter']);
         }
 
-//       dd($validated);
+       dd($validated);
 
         $employee->update($validated);
         return redirect()->route('employee.index');
@@ -349,14 +375,18 @@ class EmployeeController extends Controller
 
     private function formatDate($dateInput)
     {
-        if (is_array($dateInput) && isset($dateInput['$d'])) {
-            // Extract and format ISO date string
-            return Carbon::parse($dateInput['$d'])->format('Y-m-d');
+        if (is_array($dateInput) && isset($dateInput['$D']) && isset($dateInput['$M']) && isset($dateInput['$y'])) {
+            // Use the decomposed date parts from the dayjs object directly
+            // Note: dayjs months are 0-based, so we need to add 1
+            return sprintf('%04d-%02d-%02d',
+                (int)$dateInput['$y'],
+                (int)$dateInput['$M'] + 1,
+                (int)$dateInput['$D']
+            );
         } elseif ($dateInput) {
-            // Fallback for string inputs
             return Carbon::parse($dateInput)->format('Y-m-d');
         }
 
-        return null; // Return null if the date is not provided
+        return null;
     }
 }

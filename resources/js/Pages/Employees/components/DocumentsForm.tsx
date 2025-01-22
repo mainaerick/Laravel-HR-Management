@@ -3,8 +3,8 @@ import {Button, Col, Flex, Form, FormInstance, Input, Row, Space, Typography} fr
 import Dragger from "antd/es/upload/Dragger";
 import {InboxOutlined} from "@ant-design/icons";
 import {Employee} from "@/Pages/Employees/core/Model";
-type Props = {onTabChange:(activeKey:string)=>void, employee:any|undefined,form: FormInstance<any>,data:Employee,setData:any }
-function DocumentsForm({onTabChange,employee,form,data,setData}:Props) {
+type Props = { employee:any|undefined,data:Employee,setData:any }
+function DocumentsForm({employee,data,setData}:Props) {
 
     const handleFileChange = (fieldName, info) => {
         console.log(info)

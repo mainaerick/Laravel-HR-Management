@@ -69,8 +69,17 @@ class EmployeeController extends Controller
         $validated = $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'employee_id' => 'required|string|unique:employees,employee_id|max:255',
-            'email' => 'required|email|unique:employees,email',
+            'employee_id' => [
+                'required',
+                'int',
+                Rule::unique('employees', 'employee_id'),
+            ],
+            'email' =>  [
+                'required',
+                'email',
+                'max:255',
+                Rule::unique('employees', 'employee_id'),
+            ],
             'phone' => 'nullable|string|max:15',
             'date_of_birth' => 'nullable|array',
             'marital_status' => 'nullable|string',
@@ -85,13 +94,24 @@ class EmployeeController extends Controller
             'designation' => 'nullable|string',
             'employment_type' => 'required|in:permanent,contract,intern',
             'join_date' => 'required|array',
-            'leave_date' => 'nullable|array',
-            'appointment_letter' => 'nullable|file|mimes:pdf',
-            'salary_slips.*' => 'file|mimes:pdf',
-            'reliving_letter' => 'nullable|file|mimes:pdf',
-            'experience_letter' => 'nullable|file|mimes:pdf',
+            'leave_date' => 'nullable|string',
+            'appointment_letter' => 'nullable|array',
+            'appointment_letter.*' => 'nullable', // Skip validation for existing files
+            'appointment_letter.*.originFileObj' => 'nullable|file|mimes:pdf|max:2048', // Validate new files
+            'salary_slips.*.originFileObj' => 'nullable|file|mimes:pdf|max:2048',
+            'reliving_letter' => 'nullable|array',
+            'reliving_letter.*' => 'nullable', // Skip validation for existing files
+            'reliving_letter.*.originFileObj' => 'nullable|file|mimes:pdf|max:2048', // Validate new files
+            'experience_letter' => 'nullable|array',
+            'experience_letter.*' => 'nullable', // Skip validation for existing files
+            'experience_letter.*.originFileObj' => 'nullable|file|mimes:pdf|max:2048', // Validate new files
+            'profile_pic' => 'nullable|array',
+            'profile_pic.*' => 'nullable', // Skip validation for existing files
+            'profile_pic.*.originFileObj' => 'nullable|file|mimes:jpeg,jpg,png|max:2048', // Validate new files
+
         ]);
 
+//        dd($validated);
         $dateOfBirth = $this->formatDate($request->input('date_of_birth'));
         $joinDate = $this->formatDate($request->input('join_date'));
         $leaveDate = $this->formatDate($request->input('leave_date'));
@@ -101,6 +121,7 @@ class EmployeeController extends Controller
         $validated['leave_date'] = $leaveDate;
         $validated['date_of_birth'] = $dateOfBirth;
 
+        dd($request->all());
         $employeeId = $request->input('employee_id');
         // Handle file uploads
         if ($request->hasFile('appointment_letter')) {
@@ -203,7 +224,7 @@ class EmployeeController extends Controller
      */
     public function update(Request $request,  $id)
     {
-//        dd($request->all());
+        dd($request->all());
         $employee= Employee::findOrFail($id);
 
         $validated = $request->validate([
@@ -248,7 +269,6 @@ class EmployeeController extends Controller
             'profile_pic' => 'nullable|array',
             'profile_pic.*' => 'nullable', // Skip validation for existing files
             'profile_pic.*.originFileObj' => 'nullable|file|mimes:pdf|max:2048', // Validate new files
-
         ]);
 //        dd($validated['date_of_birth']);
         $dateOfBirth = $this->formatDate($validated['date_of_birth']);
@@ -272,11 +292,9 @@ class EmployeeController extends Controller
                     $fileName,
                     'public'
                 );
-
             }
             else {
                 // Assign the existing file path
-
                 $validated['appointment_letter'] = $filePath;
             }
 
@@ -307,6 +325,7 @@ class EmployeeController extends Controller
         if ($request->hasFile('salary_slips')) {
             $salarySlipFiles = $request->file('salary_slips');
             $salarySlipNames = $request->input('salary_slip_names'); // Assume names are sent as a parallel array
+//            dd(count($salarySlipFiles));
 
             if (count($salarySlipFiles) !== count($salarySlipNames)) {
                 return response()->json(['error' => 'Mismatch between salary slips and file names.'], 400);
@@ -357,7 +376,7 @@ class EmployeeController extends Controller
             $validated = Arr::except($validated, ['experience_letter']);
         }
 
-       dd($validated);
+//       dd($validated);
 
         $employee->update($validated);
         return redirect()->route('employee.index');

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Button, Col, DatePicker, Flex, Form, Input, message, Row, Select, Space, Upload} from "antd";
+import {Button, Col, DatePicker, Flex, Form, Input, message, Modal, Row, Select, Space, Upload} from "antd";
 import {PlusOutlined} from "@ant-design/icons";
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
@@ -12,25 +12,45 @@ type Props = {setData:any}
 function PersonalInfoForm({setData}: Props) {
 
     const [fileList, setFileList] = useState([]);
+    const [preview, setPreview] = useState({ visible: false, image: "" });
 
     const handleUploadChange = (info) => {
-        let updatedFileList = [...info.fileList];
-        // Only keep the latest file
-        updatedFileList = updatedFileList.slice(-1);
+        // Extract the originFileObj from the fileList
+        const updatedFileList = info.fileList.map((file) => file.originFileObj).filter(Boolean);
 
-        // Preview validation for image files
-        updatedFileList = updatedFileList.map((file) => {
-            if (file.response) {
-                file.url = file.response.url; // Example: add file URL from the server response
-            }
-            return file;
-        });
-
-        setData('profile_pic',updatedFileList)
-        setFileList(updatedFileList);
+        // Set the single file (originFileObj) as the profile picture
+        setData('profile_pic', updatedFileList[0] || null); // Only keep the first file or null if empty
+        setFileList(info.fileList); // Keep the file list for UI purposes
     };
 
-
+    const getBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file); // Read the file as a Data URL (Base64)
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (error) => reject(error);
+        });
+    };
+    const handlePreview = async (file) => {
+        if (!file.url && !file.preview) {
+            file.preview = await getBase64(file.originFileObj);
+        }
+        setPreview({
+            visible: true,
+            image: file.url || file.preview,
+        });
+    };
+    const beforeUpload = (file) => {
+        const isImage = file.type.startsWith("image/");
+        if (!isImage) {
+            message.error("You can only upload image files!");
+        }
+        const isSizeValid = file.size / 1024 / 1024 < 2; // 2 MB
+        if (!isSizeValid) {
+            message.error("Image must be smaller than 2MB!");
+        }
+        return isImage && isSizeValid;
+    };
     const inputStyles = {
         borderRadius: 10,
         width: "100%",
@@ -39,6 +59,13 @@ function PersonalInfoForm({setData}: Props) {
     const dateFormat = 'DD/MM/YYYY'; // Define a consistent format
     return (
         <>
+            <Modal
+                visible={preview.visible}
+                footer={null}
+                onCancel={() => setPreview({ visible: false, image: "" })}
+            >
+                <img alt="Preview" style={{ width: "100%" }} src={preview.image} />
+            </Modal>
             <Form.Item
                 name="profile_pic"
                 valuePropName="fileList"
@@ -51,8 +78,9 @@ function PersonalInfoForm({setData}: Props) {
                     multiple={false}
                     maxCount={1}
                     fileList={fileList}
-                    beforeUpload={() => false} // Prevent auto-upload
+                    beforeUpload={beforeUpload} // Prevent auto-upload
                     onChange={handleUploadChange}
+                    onPreview={handlePreview}
                 >
                     {fileList?.length >= 1 ? null : (
                         <div>

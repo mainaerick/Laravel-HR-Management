@@ -31,13 +31,7 @@ function Create({departments}: Props) {
     const handleSubmit = () => {
 
         console.log(data)
-        // const salaryslipsfilenames = data.salary_slips.map((file) => file.name)
         setData("salary_slip_names", data.salary_slips.map((file) => file.name));
-        // setData("appointment_letter", values['appointment_letter'].file);
-        // setData("experience_letter", values['experience_letter'].file);
-        // setData("reliving_letter", values['reliving_letter'].file);
-        // setData("salary_slips", values['salary_slips'].fileList.map((file) => file.originFileObj));
-
         post(route("employee.store"),{
             onSuccess: () => {
                 messageApi.open({
@@ -60,32 +54,8 @@ function Create({departments}: Props) {
                 });
             },
             onFinish: () => {
-                // setLoading(false);
             },
         })
-
-        // form.validateFields()
-        //     .then((values) => {
-        //         values["salary_slip_names"] = values['salary_slips'].fileList.map((file) => file.name)
-        //         values['appointment_letter'] = values['appointment_letter'].file
-        //         values['experience_letter'] = values['experience_letter'].file
-        //         values['reliving_letter'] = values['reliving_letter'].file
-        //         values['salary_slips'] = values['salary_slips'].fileList.map((file) => file.originFileObj)
-        //
-        //         router.post(route("employee.store"), values, {
-        //             onSuccess: () => {
-        //                 message.success('Form submitted successfully!');
-        //             },
-        //             onError: (errors) => {
-        //                 message.error('Please fix the errors before submitting.');
-        //                 console.log(errors);
-        //             },
-        //         })
-        //     })
-        //     .catch((e) => {
-        //         console.log(e)
-        //         message.error('Please fix the errors before submitting.');
-        //     });
     };
     return (
         <Authenticated header={

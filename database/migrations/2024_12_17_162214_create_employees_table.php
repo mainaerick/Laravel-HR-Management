@@ -35,10 +35,10 @@ return new class extends Migration
             $table->json('working_days')->nullable();
             $table->date('join_date');
             $table->date('leave_date')->nullable();
-            $table->string('appointment_letter')->nullable();
+            $table->json('appointment_letter')->nullable();
             $table->json('salary_slips')->nullable();
-            $table->string('reliving_letter')->nullable();
-            $table->string('experience_letter')->nullable();
+            $table->json('reliving_letter')->nullable();
+            $table->json('experience_letter')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

@@ -47,6 +47,9 @@ class Employee extends Model
         return $this->belongsTo(Department::class);
     }
     protected $casts = [
+        'experience_letter' => 'array',
+        'reliving_letter' => 'array',
+        'appointment_letter' => 'array',
         'salary_slips' => 'array',
         'working_days' => 'array',
         'date_of_birth' => 'date',

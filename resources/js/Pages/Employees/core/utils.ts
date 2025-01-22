@@ -10,9 +10,9 @@ export const transformEmployeeModel = (employee) => ({
     profile_pic: employee.profile_pic
         ? [{
             uid: '-1',
-            name: 'Appointment Letter',
-            url: employee.appointment_letter,
-            type: 'application/pdf',
+            name: 'Profile Pic',
+            url: employee.profile_pic,
+            type: 'application/img',
             status: 'done'
         }]
         : [],

@@ -11,10 +11,12 @@ class DepartmentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $departments = Department::paginate(10);
-        return Inertia::render('Departments/Index', ['departments' => $departments]);
+        $data = Department::with(['employees' => function ($query) {
+            $query->orderBy('join_date', 'desc')->limit(5);
+        }])->paginate(10);
+        return Inertia::render('Departments/Index', ['data' => $data,'filters' => $request->only(['search']),]);
     }
 
     /**

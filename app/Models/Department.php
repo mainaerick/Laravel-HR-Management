@@ -9,4 +9,11 @@ class Department extends Model
 {
     use SoftDeletes;
     protected $fillable = ['name', 'description'];
+
+
+
+    public function employees()
+    {
+        return $this->hasMany(Employee::class);
+    }
 }

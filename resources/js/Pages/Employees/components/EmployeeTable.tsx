@@ -127,7 +127,7 @@ const EmployeeTable: React.FC<{ data: PaginatedData, filters: any, departments: 
         // setIsModalOpen(false);
         queryParams.department_id=selected_departments
         queryParams.employment_type=type
-        router.get(route("employee.index"), queryParams,);
+        router.get(route("employees.index"), queryParams,);
     };
 
     const handleFilterReset = () => {
@@ -139,26 +139,26 @@ const EmployeeTable: React.FC<{ data: PaginatedData, filters: any, departments: 
     };
     const handleTableChange = (page: number) => {
         queryParams.page = page
-        router.get(route("employee.index"), queryParams, {preserveScroll: true});
+        router.get(route("employees.index"), queryParams, {preserveScroll: true});
         // Inertia.get('/employees', { page }, { preserveScroll: true });
     };
     const handlePerPageChange = (value: number) => {
         queryParams.per_page = value
-        router.get(route("employee.index"), queryParams,);
+        router.get(route("employees.index"), queryParams,);
     };
     const onSearch = (e) => {
 
         const value = e.target.value
         if (value) {
             queryParams.search = value
-            router.get(route("employee.index"), queryParams,);
+            router.get(route("employees.index"), queryParams,);
         }
 
     }
     const onSearchClear = () => {
 
         delete queryParams.search
-        router.get(route("employee.index"), queryParams,);
+        router.get(route("employees.index"), queryParams,);
     }
     const onDepartmentChange: GetProp<typeof Checkbox.Group, 'onChange'> = (checkedValues) => {
         console.log(checkedValues);

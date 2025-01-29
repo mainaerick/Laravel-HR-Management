@@ -23,7 +23,7 @@ Route::get('/dashboard', function () {
 
 //Employee Rotes
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('employees', [EmployeeController::class, 'index'])->name('employee.index');
+    Route::get('employees', [EmployeeController::class, 'index'])->name('employees.index');
     Route::get('employee/create', [EmployeeController::class, 'create'])->name('employee.create');
     Route::get('employee/edit/{id}', [EmployeeController::class, 'edit'])->name('employee.edit');
     Route::get('employee/{id}', [EmployeeController::class, 'show'])->name('employee.show');
@@ -34,7 +34,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 //Department Routes
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('departments', [DepartmentController::class, 'index'])->name('department.index');
+    Route::get('departments', [DepartmentController::class, 'index'])->name('departments.index');
     Route::get('department/create', [DepartmentController::class, 'create'])->name('department.create');
     Route::get('department/edit/{id}', [DepartmentController::class, 'edit'])->name('department.edit');
     Route::get('department/{id}', [DepartmentController::class, 'show'])->name('department.show');

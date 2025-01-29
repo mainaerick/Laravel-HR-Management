@@ -1,10 +1,10 @@
 import ApplicationLogo from "@/Components/ApplicationLogo";
 import Dropdown from "@/Components/Dropdown";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
-import {Link, usePage} from "@inertiajs/react";
+import {Link, router, usePage} from "@inertiajs/react";
 import React, {PropsWithChildren, ReactNode, useState} from "react";
 import {Content, Header, Footer} from "antd/es/layout/layout";
-import {Breadcrumb, Button, Col, Flex, Layout, Menu, Row, theme} from "antd";
+import {Breadcrumb, Button, Col, Flex, Layout, Menu, MenuProps, Row, theme} from "antd";
 import Sider from "antd/es/layout/Sider";
 import {
     ApartmentOutlined,
@@ -45,22 +45,32 @@ export default function Authenticated({
                                           children,
                                       }: PropsWithChildren<{ header?: ReactNode }>) {
     const user = usePage().props.auth.user;
-
+    const { ziggy } = usePage().props; // Ensure Ziggy routes are available
     const [collapsed, setCollapsed] = useState<boolean>();
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
     const [title, setTitle] = useState<string>();
     const [description, setDescription] = useState<string>();
+    const currentPath = new URL(ziggy.location).pathname.split("/")[1]; // Extract first segment
+
+// Match currentPath with available routes to get the selected key
+    const routeKeys = Object.keys(ziggy.routes);
+    const matchedKey = routeKeys.find(key => ziggy.routes[key].uri === currentPath) || "employees";
+    const extractedKey = matchedKey.split(".")[0]; // Extract module name (e.g., "employees" from "employees.index")
+    const [selectedKey, setSelectedKey] = useState(extractedKey || "employees");
+
     const {
         token: {colorBgContainer, borderRadiusLG},
     } = theme.useToken();
     const onCollapse = (collapsed) => {
-        console.log(collapsed);
         setCollapsed(collapsed);
     };
 
     const onPageTitleDesc = (title: string, desc: string) => {
+    };
+    const onClick: MenuProps['onClick'] = (e) => {
+        router.get(route(`${e.key}.index`))
     };
     return (
         // <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -236,14 +246,13 @@ export default function Authenticated({
                 onCollapse={onCollapse}
             >
                 <div className="logo mt-6 ">
-                    {" "}
                     <HRLogo/>
-
                 </div>
                 <Menu
                     className={"bg-gray-100 pt-6"}
                     style={{border: "0px"}}
-                    defaultSelectedKeys={["employees"]}
+                    defaultSelectedKeys={[selectedKey]}
+                    onClick={onClick}
                     mode="inline"
                 >
                     <Menu.Item key="dashboard">
@@ -252,13 +261,7 @@ export default function Authenticated({
                     </Menu.Item>
                     <Menu.Item key="employees">
                         <TeamOutlined/>
-                        <span><Link
-                            href={route("employee.index")}
-
-                        >
-                            All Employees
-                        </Link></span>
-
+                        <span>All Employees</span>
                     </Menu.Item>
                     <Menu.Item key="departments">
                         <ApartmentOutlined/>

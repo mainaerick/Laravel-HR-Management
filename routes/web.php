@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
@@ -20,7 +21,7 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-
+//Employee Rotes
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('employees', [EmployeeController::class, 'index'])->name('employee.index');
     Route::get('employee/create', [EmployeeController::class, 'create'])->name('employee.create');
@@ -31,6 +32,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('employee', [EmployeeController::class, 'store'])->name('employee.store');
 });
 
+//Department Routes
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('departments', [DepartmentController::class, 'index'])->name('department.index');
+    Route::get('department/create', [DepartmentController::class, 'create'])->name('department.create');
+    Route::get('department/edit/{id}', [DepartmentController::class, 'edit'])->name('department.edit');
+    Route::get('department/{id}', [DepartmentController::class, 'show'])->name('department.show');
+    Route::delete('department/{id}', [DepartmentController::class, 'destroy'])->name('department.destroy');
+    Route::put('department/{id}', [DepartmentController::class, 'update'])->name('department.update');
+    Route::post('department', [DepartmentController::class, 'store'])->name('department.store');
+
+});
 //Profile rotes
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

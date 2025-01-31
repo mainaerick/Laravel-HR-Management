@@ -1,9 +1,9 @@
 import React from 'react';
 import {Department} from "@/Pages/Departments/Core/Model";
-import {Card, Col, Flex, Input, List, Row, Space, Typography} from "antd";
+import {Avatar, Card, Col, Flex, Input, List, Row, Space, Typography} from "antd";
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import {SearchOutlined} from "@ant-design/icons";
-import {router} from "@inertiajs/react";
+import {Link, router} from "@inertiajs/react";
 import Meta from "antd/es/card/Meta";
 import {Employee} from "@/Pages/Employees/core/Model";
 
@@ -74,15 +74,16 @@ function Index({auth,data,filters}:Props) {
                     renderItem={(department:Department) => (
                         <List.Item>
                             <Card title={<Meta className={"pt-6 pb-3"}
-                                               title={department.name}
+                                               title={<Typography.Title level={4}>{department.name}</Typography.Title> }
                                                description={<Typography.Text type={"secondary"} style={{fontSize:"14px"}}>20 Members</Typography.Text>}
-                                               />} extra={<a href="#">View All</a>}>
+                            />} extra={<Typography.Link>View All</Typography.Link>}>
                                 <List
                                 itemLayout="horizontal"
                                 dataSource={department.employees}
                                 renderItem={(item:Employee, index) => (
                                     <List.Item key={index}>
                                         <List.Item.Meta
+                                            avatar={<Avatar src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`} />}
                                             title={<a href="https://ant.design">{`${item.first_name} ${item.last_name} `}</a>}
                                             description={item.designation}
                                         />

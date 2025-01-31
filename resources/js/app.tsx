@@ -26,6 +26,8 @@ createInertiaApp({
 
                         // Alias Token
                         colorBgContainer: '#fff',
+                        colorLink:'#7152F3',
+
                     },
                 }}
             >
@@ -45,6 +47,9 @@ createInertiaApp({
 
                     // Alias Token
                     colorBgContainer: '#fff',
+                    colorLink:'#7152F3',
+                    fontWeightStrong:700,
+                    fontSizeHeading4:18
                 },
                 components: {
                     Table: {

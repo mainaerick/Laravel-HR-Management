@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Department;
+use App\Models\Employee;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -44,9 +45,13 @@ class DepartmentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Department $department)
+    public function show(Request $request,$id)
     {
-        //
+        $department = Department::findOrFail($id);
+        $employees = Employee::where('department_id', $id)
+            ->with(['department:id,name']) // Optimize department relationship
+            ->paginate(10);
+        return Inertia::render('Departments/Show', ['department' =>$department,'employees' => $employees,'filters' => $request->only(['department_id', 'employment_type', 'search']),]);
     }
 
     /**

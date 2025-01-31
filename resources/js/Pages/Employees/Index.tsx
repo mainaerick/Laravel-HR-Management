@@ -29,7 +29,7 @@ function Index({auth, employees,filters,departments}: Props) {
             }
         >
             <Head title="Employees"/>
-            <EmployeeTable data={employees} filters={filters} departments={departments}/>
+            <EmployeeTable data={employees} filters={filters} route_redirect={"employees.index"}  departments={departments}/>
         </AuthenticatedLayout>
 
     );

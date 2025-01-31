@@ -29,10 +29,9 @@ import {Department} from "@/Pages/Departments/Core/Model";
 
 
 
-const EmployeeTable: React.FC<{ data: PaginatedData, filters: any, departments: Department[] }> = ({
+const EmployeeTable: React.FC<{ data: PaginatedData, filters: any,route_redirect:string,passed_params?:any,departments?:Department[] }> = ({
                                                                                                        data,
-                                                                                                       filters,
-                                                                                                       departments
+                                                                                                       filters,route_redirect,passed_params,departments
                                                                                                    }) => {
 
     const generateEmployeeColumns = (): TableColumnsType<Employee> => {
@@ -55,7 +54,7 @@ const EmployeeTable: React.FC<{ data: PaginatedData, filters: any, departments: 
                 title: 'Department',
                 dataIndex: 'department_id',
                 key: 'department_id',
-                render:(text,item)=> <span>{item.department_id && departments.find((department)=>department.id===item.department_id).name}</span>
+                render:(text,item)=> <span>{item.department?.name}</span>
             },
             {
                 title: 'Designation',
@@ -108,7 +107,6 @@ const EmployeeTable: React.FC<{ data: PaginatedData, filters: any, departments: 
         setIsModalOpen(true);
     };
     const handleDelete = (id) => {
-        console.log(id)
         if (window.confirm('Are you sure you want to delete this employee?')) {
             router.delete(route('employee.destroy', id), {
                 onSuccess: () => {
@@ -127,7 +125,11 @@ const EmployeeTable: React.FC<{ data: PaginatedData, filters: any, departments: 
         // setIsModalOpen(false);
         queryParams.department_id=selected_departments
         queryParams.employment_type=type
-        router.get(route("employees.index"), queryParams,);
+        queryParams = {
+            ...queryParams,...passed_params
+        }
+
+        router.get(route(route_redirect, passed_params?.id ? { id: passed_params.id } : {}), queryParams, { preserveScroll: true });
     };
 
     const handleFilterReset = () => {
@@ -135,30 +137,50 @@ const EmployeeTable: React.FC<{ data: PaginatedData, filters: any, departments: 
         setType()
         delete queryParams.department_id
         delete queryParams.employment_type
+        queryParams = {
+            ...queryParams,...passed_params
+        }
+
+        router.get(route(route_redirect, passed_params?.id ? { id: passed_params.id } : {}), queryParams, { preserveScroll: true });
         // setIsModalOpen(false);
     };
     const handleTableChange = (page: number) => {
-        queryParams.page = page
-        router.get(route("employees.index"), queryParams, {preserveScroll: true});
-        // Inertia.get('/employees', { page }, { preserveScroll: true });
+
+        queryParams = {
+            ...queryParams,...passed_params,page : page
+        }
+
+        router.get(route(route_redirect, passed_params?.id ? { id: passed_params.id } : {}), queryParams, { preserveScroll: true });
+
     };
     const handlePerPageChange = (value: number) => {
         queryParams.per_page = value
-        router.get(route("employees.index"), queryParams,);
+        queryParams = {
+            ...queryParams,...passed_params
+        }
+
+        router.get(route(route_redirect, passed_params?.id ? { id: passed_params.id } : {}), queryParams, { preserveScroll: true });
     };
     const onSearch = (e) => {
 
         const value = e.target.value
         if (value) {
             queryParams.search = value
-            router.get(route("employees.index"), queryParams,);
+            queryParams = {
+                ...queryParams,...passed_params
+            }
+
+            router.get(route(route_redirect, passed_params?.id ? { id: passed_params.id } : {}), queryParams, { preserveScroll: true });
         }
 
     }
     const onSearchClear = () => {
-
         delete queryParams.search
-        router.get(route("employees.index"), queryParams,);
+        queryParams = {
+            ...queryParams,...passed_params
+        }
+
+        router.get(route(route_redirect, passed_params?.id ? { id: passed_params.id } : {}), queryParams, { preserveScroll: true });
     }
     const onDepartmentChange: GetProp<typeof Checkbox.Group, 'onChange'> = (checkedValues) => {
         console.log(checkedValues);
@@ -173,18 +195,15 @@ const EmployeeTable: React.FC<{ data: PaginatedData, filters: any, departments: 
     }
     return (
         <Card className={"mr-6"} style={{borderRadius: "10px"}}>
-
             <Flex justify={"space-between"} gap={"middle"} className={"mb-6"}>
                 {/*<Search enterButton={false} placeholder="input search text" onSearch={onSearch} style={{ width: 200 }} />*/}
                 <Input size="large" placeholder="Search" value={filters?.search} allowClear onPressEnter={onSearch}
                        onClear={onSearchClear} prefix={<SearchOutlined/>} style={{width: 300, borderRadius: 10}}/>
-
                 <Flex justify={"space-between"} gap={"middle"}>
                     <Button style={{borderRadius: 10, paddingTop: "20px", paddingBottom: "20px"}} type="primary" onClick={onNewEmployee}
                             icon={<PlusOutlined/>}>
                         Add New Employee
                     </Button>
-
                     <div>
                         <Button type="default" onClick={showModal} icon={<FilterOutlined/>}
                                 style={{borderRadius: 10, paddingTop: "20px", paddingBottom: "20px"}}>
@@ -193,7 +212,7 @@ const EmployeeTable: React.FC<{ data: PaginatedData, filters: any, departments: 
                         <Modal title="Filter" open={isModalOpen} cancelText={"Reset"} onOk={handleConfirmFilters} onCancel={handleFilterReset}>
                             <Card>
                                 <Flex vertical={true} gap={"middle"}>
-                                    <Flex vertical={true} gap={"middle"}>
+                                    {departments&&<Flex vertical={true} gap={"middle"}>
                                         <Typography.Text className={"font-bold text-md"}>Department</Typography.Text>
                                         <Checkbox.Group style={{width: '100%'}} value={selected_departments}
                                                         onChange={onDepartmentChange}>
@@ -207,7 +226,7 @@ const EmployeeTable: React.FC<{ data: PaginatedData, filters: any, departments: 
                                             </Row></Checkbox.Group>
 
 
-                                    </Flex>
+                                    </Flex>}
                                     <Flex vertical={true} gap={"middle"}>
                                         <Typography.Text className={"font-bold text-md"}>Select Type</Typography.Text>
                                         <Radio.Group onChange={onTypeChange} value={type}>

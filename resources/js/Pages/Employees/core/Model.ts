@@ -38,6 +38,7 @@ export interface Employee {
     city?: string | null;
     state?: string | null;
     zipcode?: string | null;
+    department?:Department
     department_id?: number | null;
     department_details: Department;
     designation?: string | null;

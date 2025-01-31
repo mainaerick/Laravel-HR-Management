@@ -18,7 +18,8 @@ class EmployeeController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Employee::with('department');
+        $query = Employee::query()
+            ->with(['department:id,name']);
         $departments = Department::all();
         $per_page = 10;
         if ($request->has('per_page')) {
@@ -227,7 +228,7 @@ class EmployeeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show( $id)
+    public function show($id)
     {
 
         $employee = Employee::findOrFail($id);

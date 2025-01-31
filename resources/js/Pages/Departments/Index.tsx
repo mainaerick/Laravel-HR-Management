@@ -3,9 +3,10 @@ import {Department} from "@/Pages/Departments/Core/Model";
 import {Avatar, Card, Col, Flex, Input, List, Row, Space, Typography} from "antd";
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import {SearchOutlined} from "@ant-design/icons";
-import {Link, router} from "@inertiajs/react";
+import {Head, Link, router} from "@inertiajs/react";
 import Meta from "antd/es/card/Meta";
 import {Employee} from "@/Pages/Employees/core/Model";
+import EmployeeTable from "@/Pages/Employees/components/EmployeeTable";
 
 type Props = {
     auth: any, filters:any,data:any
@@ -48,17 +49,13 @@ function Index({auth,data,filters}:Props) {
                 </Flex>
             }
         >
+            <Head title="Departments"/>
             <Card className={"mr-6"} style={{borderRadius: "10px"}}>
 
                 <Flex justify={"space-between"} gap={"middle"} className={"mb-6"}>
                     {/*<Search enterButton={false} placeholder="input search text" onSearch={onSearch} style={{ width: 200 }} />*/}
                     <Input size="large" placeholder="Search" value={filters?.search} allowClear onPressEnter={onSearch}
                            onClear={onSearchClear} prefix={<SearchOutlined/>} style={{width: 300, borderRadius: 10}}/>
-
-
-
-
-
                 </Flex>
                 <List
                     grid={{
@@ -76,7 +73,7 @@ function Index({auth,data,filters}:Props) {
                             <Card title={<Meta className={"pt-6 pb-3"}
                                                title={<Typography.Title level={4}>{department.name}</Typography.Title> }
                                                description={<Typography.Text type={"secondary"} style={{fontSize:"14px"}}>20 Members</Typography.Text>}
-                            />} extra={<Typography.Link>View All</Typography.Link>}>
+                            />} extra={<Typography.Link><Link href={route("department.show", department.id)}> View All</Link></Typography.Link>}>
                                 <List
                                 itemLayout="horizontal"
                                 dataSource={department.employees}

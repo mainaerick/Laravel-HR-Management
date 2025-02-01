@@ -48,9 +48,19 @@ class DepartmentController extends Controller
     public function show(Request $request,$id)
     {
         $department = Department::findOrFail($id);
-        $employees = Employee::where('department_id', $id)
-            ->with(['department:id,name']) // Optimize department relationship
-            ->paginate(10);
+        $query = Employee::query()->where('department_id', $id)
+            ->with(['department:id,name']); // Optimize department relationship
+
+
+        if ($request->has('search')) {
+            $search = $request->get('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('first_name', 'LIKE', "%{$search}%")
+                    ->orWhere('last_name', 'LIKE', "%{$search}%")
+                    ->orWhere('email', 'LIKE', "%{$search}%");
+            });
+        }
+        $employees = $query->paginate(10);
         return Inertia::render('Departments/Show', ['department' =>$department,'employees' => $employees,'filters' => $request->only(['department_id', 'employment_type', 'search']),]);
     }
 

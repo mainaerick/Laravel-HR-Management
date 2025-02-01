@@ -11,10 +11,21 @@ class AttendanceController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $attendance = Attendance::with('employee')->paginate(10);
-        return Inertia::render('Attendance/Index', ['attendance' => $attendance]);
+        $per_page = 10;
+        $query = Attendance::query();
+        if ($request->has('search')) {
+            $search = $request->get('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('first_name', 'LIKE', "%{$search}%")
+                    ->orWhere('last_name', 'LIKE', "%{$search}%")
+                    ->orWhere('email', 'LIKE', "%{$search}%");
+            });
+        }
+
+        $attendance = $query->paginate($per_page);
+        return Inertia::render('Attendance/Index', ['data' => $attendance,'filters' => $request->only(['search']),]);
     }
 
     /**

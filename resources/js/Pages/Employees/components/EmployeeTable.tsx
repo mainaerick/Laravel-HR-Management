@@ -125,10 +125,10 @@ const EmployeeTable: React.FC<{ data: PaginatedData, filters: any,route_redirect
         // setIsModalOpen(false);
         queryParams.department_id=selected_departments
         queryParams.employment_type=type
+        queryParams.page = 1
         queryParams = {
             ...queryParams,...passed_params
         }
-
         router.get(route(route_redirect, passed_params?.id ? { id: passed_params.id } : {}), queryParams, { preserveScroll: true });
     };
 
@@ -140,12 +140,10 @@ const EmployeeTable: React.FC<{ data: PaginatedData, filters: any,route_redirect
         queryParams = {
             ...queryParams,...passed_params
         }
-
         router.get(route(route_redirect, passed_params?.id ? { id: passed_params.id } : {}), queryParams, { preserveScroll: true });
         // setIsModalOpen(false);
     };
     const handleTableChange = (page: number) => {
-
         queryParams = {
             ...queryParams,...passed_params,page : page
         }
@@ -166,6 +164,7 @@ const EmployeeTable: React.FC<{ data: PaginatedData, filters: any,route_redirect
         const value = e.target.value
         if (value) {
             queryParams.search = value
+            queryParams.page = 1
             queryParams = {
                 ...queryParams,...passed_params
             }

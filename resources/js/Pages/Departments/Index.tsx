@@ -65,7 +65,7 @@ function Index({auth,data,filters}:Props) {
                         md: 4,
                         lg: 4,
                         xl: 2,
-                        xxl: 3,
+                        xxl: 2,
                     }}
                     dataSource={departments}
                     renderItem={(department:Department) => (

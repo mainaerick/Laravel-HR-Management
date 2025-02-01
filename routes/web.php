@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProfileController;
@@ -24,24 +25,35 @@ Route::get('/dashboard', function () {
 //Employee Rotes
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('employees', [EmployeeController::class, 'index'])->name('employees.index');
-    Route::get('employee/create', [EmployeeController::class, 'create'])->name('employee.create');
-    Route::get('employee/edit/{id}', [EmployeeController::class, 'edit'])->name('employee.edit');
-    Route::get('employee/{id}', [EmployeeController::class, 'show'])->name('employee.show');
-    Route::delete('employee/{id}', [EmployeeController::class, 'destroy'])->name('employee.destroy');
-    Route::put('employee/{id}', [EmployeeController::class, 'update'])->name('employee.update');
-    Route::post('employee', [EmployeeController::class, 'store'])->name('employee.store');
+    Route::get('employees/create', [EmployeeController::class, 'create'])->name('employee.create');
+    Route::get('employees/edit/{id}', [EmployeeController::class, 'edit'])->name('employee.edit');
+    Route::get('employees/{id}', [EmployeeController::class, 'show'])->name('employee.show');
+    Route::delete('employees/{id}', [EmployeeController::class, 'destroy'])->name('employee.destroy');
+    Route::put('employees/{id}', [EmployeeController::class, 'update'])->name('employee.update');
+    Route::post('employees', [EmployeeController::class, 'store'])->name('employee.store');
 });
 
 //Department Routes
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('departments', [DepartmentController::class, 'index'])->name('departments.index');
-    Route::get('department/create', [DepartmentController::class, 'create'])->name('department.create');
-    Route::get('department/edit/{id}', [DepartmentController::class, 'edit'])->name('department.edit');
-    Route::get('department/{id}', [DepartmentController::class, 'show'])->name('department.show');
-    Route::delete('department/{id}', [DepartmentController::class, 'destroy'])->name('department.destroy');
-    Route::put('department/{id}', [DepartmentController::class, 'update'])->name('department.update');
-    Route::post('department', [DepartmentController::class, 'store'])->name('department.store');
+    Route::get('departments/create', [DepartmentController::class, 'create'])->name('department.create');
+    Route::get('departments/edit/{id}', [DepartmentController::class, 'edit'])->name('department.edit');
+    Route::get('departments/{id}', [DepartmentController::class, 'show'])->name('department.show');
+    Route::delete('departments/{id}', [DepartmentController::class, 'destroy'])->name('department.destroy');
+    Route::put('departments/{id}', [DepartmentController::class, 'update'])->name('department.update');
+    Route::post('departments', [DepartmentController::class, 'store'])->name('department.store');
 
+});
+
+//Attendance Routes
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('attendance', [AttendanceController::class, 'index'])->name('attendance.index');
+    Route::get('attendance/create', [AttendanceController::class, 'create'])->name('attendance.create');
+    Route::get('attendance/edit/{id}', [AttendanceController::class, 'edit'])->name('attendance.edit');
+    Route::get('attendance/{id}', [AttendanceController::class, 'show'])->name('attendance.show');
+    Route::delete('attendance/{id}', [AttendanceController::class, 'destroy'])->name('attendance.destroy');
+    Route::put('attendance/{id}', [AttendanceController::class, 'update'])->name('attendance.update');
+    Route::post('attendance', [AttendanceController::class, 'store'])->name('attendance.store');
 });
 //Profile rotes
 Route::middleware('auth')->group(function () {

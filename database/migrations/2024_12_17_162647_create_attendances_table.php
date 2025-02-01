@@ -21,6 +21,7 @@ return new class extends Migration
             $table->time('working_hours')->nullable();
             $table->enum('status', ['on-time', 'late', 'absent']);
             $table->timestamps();
+
         });
     }
 

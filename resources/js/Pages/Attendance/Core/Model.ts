@@ -1,3 +1,5 @@
+import {Employee} from "@/Pages/Employees/core/Model";
+
 export interface Attendance {
     id: number;
     employee_id: number;

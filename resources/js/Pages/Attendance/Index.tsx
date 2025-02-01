@@ -7,13 +7,15 @@ import {Head, Link, router} from "@inertiajs/react";
 import Meta from "antd/es/card/Meta";
 import {Employee} from "@/Pages/Employees/core/Model";
 import EmployeeTable from "@/Pages/Employees/components/EmployeeTable";
+import AttendanceTable from "@/Pages/Attendance/Components/AttendanceTable";
+import {Attendance} from "@/Pages/Attendance/Core/Model";
 
 type Props = {
     auth: any, filters:any,data:any
 }
 function Index({auth,data,filters}:Props) {
 
-    // let departments:Department[] = data.data
+    let attendances:Attendance[] = data.data
 
     console.log(data)
     let queryParams = {
@@ -50,6 +52,9 @@ function Index({auth,data,filters}:Props) {
             }
         >
             <Head title="Attendance"/>
+
+            <AttendanceTable data={data} filters={filters} route_redirect={"attendance.index"}/>
+
         </AuthenticatedLayout>
     );
 }

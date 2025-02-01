@@ -14,10 +14,11 @@ class AttendanceController extends Controller
     public function index(Request $request)
     {
         $per_page = 10;
-        $query = Attendance::query();
+        $query = Attendance::with('employee');
+
         if ($request->has('search')) {
             $search = $request->get('search');
-            $query->where(function ($q) use ($search) {
+            $query->whereHas('employee', function ($q) use ($search) {
                 $q->where('first_name', 'LIKE', "%{$search}%")
                     ->orWhere('last_name', 'LIKE', "%{$search}%")
                     ->orWhere('email', 'LIKE', "%{$search}%");
@@ -25,7 +26,11 @@ class AttendanceController extends Controller
         }
 
         $attendance = $query->paginate($per_page);
-        return Inertia::render('Attendance/Index', ['data' => $attendance,'filters' => $request->only(['search']),]);
+
+        return Inertia::render('Attendance/Index', [
+            'data' => $attendance,
+            'filters' => $request->only(['search']),
+        ]);
     }
 
     /**

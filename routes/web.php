@@ -4,6 +4,7 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Payroll;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
@@ -54,6 +55,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('attendance/{id}', [AttendanceController::class, 'destroy'])->name('attendance.destroy');
     Route::put('attendance/{id}', [AttendanceController::class, 'update'])->name('attendance.update');
     Route::post('attendance', [AttendanceController::class, 'store'])->name('attendance.store');
+});
+
+//Payroll Routes
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('payroll', [Payroll::class, 'index'])->name('payroll.index');
+    Route::get('payroll/create', [Payroll::class, 'create'])->name('payroll.create');
+    Route::get('payroll/edit/{id}', [Payroll::class, 'edit'])->name('payroll.edit');
+    Route::get('payroll/{id}', [Payroll::class, 'show'])->name('payroll.show');
+    Route::delete('payroll/{id}', [Payroll::class, 'destroy'])->name('payroll.destroy');
+    Route::put('payroll/{id}', [Payroll::class, 'update'])->name('payroll.update');
+    Route::post('payroll', [Payroll::class, 'store'])->name('payroll.store');
 });
 //Profile rotes
 Route::middleware('auth')->group(function () {

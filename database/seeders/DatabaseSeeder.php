@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Attendance;
 use App\Models\Department;
 use App\Models\Employee;
+use App\Models\JobOpening;
 use App\Models\Payroll;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -69,6 +70,23 @@ class DatabaseSeeder extends Seeder
                 'deductions' => $deductions,
                 'net_salary' => $netSalary,
                 'status' => $status,
+            ]);
+        }
+
+
+
+        if ($departments->isEmpty()) {
+            $this->command->warn('No departments found. Please seed the departments table first.');
+            return;
+        }
+
+        foreach (range(1, 50) as $_) {
+            JobOpening::create([
+                'title' => $faker->jobTitle,
+                'department_id' => $departments->random()->id ?? null,
+                'location' => $faker->city,
+                'salary' => $faker->randomFloat(2, 50000, 200000),
+                'employment_type' => $faker->randomElement(['full-time', 'part-time', 'remote']),
             ]);
         }
     }

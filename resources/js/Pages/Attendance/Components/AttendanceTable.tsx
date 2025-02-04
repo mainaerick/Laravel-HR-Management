@@ -23,10 +23,10 @@ import {Department} from "@/Pages/Departments/Core/Model";
 
 
 type Props = {
-    data:PaginatedData, filters: any,passed_params?:any,route_redirect:string
+    data:PaginatedData, filters: any,passed_params?:any,route_redirect:string,columns:any
 }
-function AttendanceTable({data,filters,passed_params,route_redirect}:Props) {
-    let attendances:Attendance[] = data.data
+function AttendanceTable({data,filters,passed_params,route_redirect,columns}:Props) {
+    let datasource:any[] = data.data
     let queryParams = {
         per_page: data.per_page,
         page: data.current_page,
@@ -36,42 +36,7 @@ function AttendanceTable({data,filters,passed_params,route_redirect}:Props) {
 
     }
 
-    const columns: TableColumnsType<Attendance> = [
-        {
-            title: 'Employee Name',
-            dataIndex: 'employee',
-            key: 'employee',
-            render: (employee: any) => `${employee.first_name} ${employee.last_name}`,
-        },
-        {
-            title: 'Designation',
-            dataIndex: 'employee',
-            key: 'designation',
-            render: (employee: Employee) => `${employee?.designation}`,
-        },
-        {
-            title: 'Type',
-            dataIndex: 'employee',
-            key: 'type',
-            render: (employee: Employee) => `${employee?.location_type}`,
-        },
-        {
-            title: 'Check-In Time',
-            dataIndex: 'check_in_time',
-            key: 'check_out_time',
-        },
-        {
-            title: 'Status',
-            dataIndex: 'status',
-            key: 'status',
-            render: (status: string) => {
-                let color = 'green';
-                if (status === 'late') color = 'orange';
-                if (status === 'absent') color = 'red';
-                return <Tag color={color}>{status}</Tag>;
-            },
-        },
-    ];
+
     const handleTableChange = (page: number) => {
         queryParams = {
             ...queryParams,...passed_params,page : page
@@ -121,7 +86,7 @@ function AttendanceTable({data,filters,passed_params,route_redirect}:Props) {
             </Flex>
             <Table scroll={{y: 500}}
                    columns={columns}
-                   dataSource={attendances}
+                   dataSource={datasource}
                    rowKey="id"
                    pagination={false}
             />

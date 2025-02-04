@@ -275,7 +275,7 @@ export default function Authenticated({
                         <DollarOutlined/>
                         <span>Payroll</span>
                     </Menu.Item>
-                    <Menu.Item key="jobs">
+                    <Menu.Item key="jobopenings">
                         <LaptopOutlined/>
                         <span>Jobs</span>
                     </Menu.Item>

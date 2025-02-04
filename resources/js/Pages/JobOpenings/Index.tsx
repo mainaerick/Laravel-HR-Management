@@ -10,46 +10,43 @@ import EmployeeTable from "@/Pages/Employees/components/EmployeeTable";
 import AttendanceTable from "@/Pages/Attendance/Components/AttendanceTable";
 import {Attendance} from "@/Pages/Attendance/Core/Model";
 import {Payroll} from "@/Pages/Payroll/Core/Model";
+import {JobOpening} from "@/Pages/JobOpenings/Core/Model";
+import {ColumnsType} from "antd/es/table";
 
 type Props = {
     auth: any, filters:any,data:any
 }
 function Index({auth,data,filters}:Props) {
 
-    let payroll:Payroll[] = data.data
-    const columns: TableColumnsType<Payroll> = [
+    let jobs:JobOpening[] = data.data
+    const columns: ColumnsType<JobOpening> = [
         {
-            title: 'Employee Name',
-            dataIndex: 'employee',
-            key: 'employee',
-            render: (employee) => `${employee.first_name} ${employee.last_name}`,
+            title: "Title",
+            dataIndex: "title",
+            key: "title",
         },
         {
-            title: 'Base Salary',
-            dataIndex: 'base_salary',
-            key: 'base_salary',
-            render: (salary:string):string => `$${Number.parseInt(salary).toFixed(2)}`,
+            title: "Department",
+            dataIndex: ["department", "name"],
+            key: "department",
+            render: (text) => text || "N/A",
         },
         {
-            title: 'Deductions',
-            dataIndex: 'deductions',
-            key: 'deductions',
-            render: (deductions) => `$${Number.parseInt(deductions).toFixed(2)}`,
+            title: "Location",
+            dataIndex: "location",
+            key: "location",
+            render: (text) => text || "Remote",
         },
         {
-            title: 'Net Salary',
-            dataIndex: 'net_salary',
-            key: 'net_salary',
-            render: (salary) => `$${Number.parseInt(salary).toFixed(2)}`,
+            title: "Salary",
+            dataIndex: "salary",
+            key: "salary",
+            render: (salary) => (salary ? `KSH ${salary.toFixed(2)}` : "Not specified"),
         },
         {
-            title: 'Status',
-            dataIndex: 'status',
-            key: 'status',
-            render: (status) => {
-                let color = status === 'completed' ? 'green' : 'orange';
-                return <Tag color={color}>{status.toUpperCase()}</Tag>;
-            },
+            title: "Employment Type",
+            dataIndex: "employment_type",
+            key: "employment_type",
         },
     ];
     let queryParams = {

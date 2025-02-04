@@ -2,11 +2,18 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class JobOpening extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes,HasFactory;
     protected $fillable = ['title', 'department_id', 'location', 'salary', 'employment_type'];
+
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
 }

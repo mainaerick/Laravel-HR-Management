@@ -3,6 +3,8 @@
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\JobOpeningController;
+use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Payroll;
 use Illuminate\Foundation\Application;
@@ -59,14 +61,26 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 //Payroll Routes
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('payroll', [Payroll::class, 'index'])->name('payroll.index');
-    Route::get('payroll/create', [Payroll::class, 'create'])->name('payroll.create');
-    Route::get('payroll/edit/{id}', [Payroll::class, 'edit'])->name('payroll.edit');
-    Route::get('payroll/{id}', [Payroll::class, 'show'])->name('payroll.show');
-    Route::delete('payroll/{id}', [Payroll::class, 'destroy'])->name('payroll.destroy');
-    Route::put('payroll/{id}', [Payroll::class, 'update'])->name('payroll.update');
-    Route::post('payroll', [Payroll::class, 'store'])->name('payroll.store');
+    Route::get('payroll', [PayrollController::class, 'index'])->name('payroll.index');
+    Route::get('payroll/create', [PayrollController::class, 'create'])->name('payroll.create');
+    Route::get('payroll/edit/{id}', [PayrollController::class, 'edit'])->name('payroll.edit');
+    Route::get('payroll/{id}', [PayrollController::class, 'show'])->name('payroll.show');
+    Route::delete('payroll/{id}', [PayrollController::class, 'destroy'])->name('payroll.destroy');
+    Route::put('payroll/{id}', [PayrollController::class, 'update'])->name('payroll.update');
+    Route::post('payroll', [PayrollController::class, 'store'])->name('payroll.store');
 });
+
+//JobOpenings Routes
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('jobopening', [JobOpeningController::class, 'index'])->name('jobopenings.index');
+    Route::get('jobopenings/create', [JobOpeningController::class, 'create'])->name('jobopening.create');
+    Route::get('jobopenings/edit/{id}', [JobOpeningController::class, 'edit'])->name('jobopening.edit');
+    Route::get('jobopenings/{id}', [JobOpeningController::class, 'show'])->name('jobopening.show');
+    Route::delete('jobopenings/{id}', [JobOpeningController::class, 'destroy'])->name('jobopening.destroy');
+    Route::put('jobopenings/{id}', [JobOpeningController::class, 'update'])->name('jobopening.update');
+    Route::post('jobopenings', [JobOpeningController::class, 'store'])->name('jobopening.store');
+});
+
 //Profile rotes
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

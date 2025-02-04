@@ -1,6 +1,6 @@
 import React from 'react';
 import {Department} from "@/Pages/Departments/Core/Model";
-import {Avatar, Card, Col, Flex, Input, List, Row, Space, Typography} from "antd";
+import {Avatar, Card, Col, Flex, Input, List, Row, Space, TableColumnsType, Tag, Typography} from "antd";
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import {SearchOutlined} from "@ant-design/icons";
 import {Head, Link, router} from "@inertiajs/react";
@@ -17,6 +17,42 @@ function Index({auth,data,filters}:Props) {
 
     let attendances:Attendance[] = data.data
 
+    const columns: TableColumnsType<Attendance> = [
+        {
+            title: 'Employee Name',
+            dataIndex: 'employee',
+            key: 'employee',
+            render: (employee: any) => `${employee.first_name} ${employee.last_name}`,
+        },
+        {
+            title: 'Designation',
+            dataIndex: 'employee',
+            key: 'designation',
+            render: (employee: Employee) => `${employee?.designation}`,
+        },
+        {
+            title: 'Type',
+            dataIndex: 'employee',
+            key: 'type',
+            render: (employee: Employee) => `${employee?.location_type}`,
+        },
+        {
+            title: 'Check-In Time',
+            dataIndex: 'check_in_time',
+            key: 'check_out_time',
+        },
+        {
+            title: 'Status',
+            dataIndex: 'status',
+            key: 'status',
+            render: (status: string) => {
+                let color = 'green';
+                if (status === 'late') color = 'orange';
+                if (status === 'absent') color = 'red';
+                return <Tag color={color}>{status}</Tag>;
+            },
+        },
+    ];
     console.log(data)
     let queryParams = {
         per_page: data.per_page,
@@ -53,7 +89,7 @@ function Index({auth,data,filters}:Props) {
         >
             <Head title="Attendance"/>
 
-            <AttendanceTable data={data} filters={filters} route_redirect={"attendance.index"}/>
+            <AttendanceTable data={data} filters={filters} route_redirect={"attendance.index"} columns={columns}/>
 
         </AuthenticatedLayout>
     );

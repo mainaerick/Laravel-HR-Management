@@ -12,11 +12,13 @@ import {Attendance} from "@/Pages/Attendance/Core/Model";
 import {Payroll} from "@/Pages/Payroll/Core/Model";
 import {JobOpening} from "@/Pages/JobOpenings/Core/Model";
 import {ColumnsType} from "antd/es/table";
+import JobsListing from "@/Pages/JobOpenings/Components/JobsListing";
 
 type Props = {
-    auth: any, filters:any,data:any
+    auth: any, filters:any,data:any,departments:Department[]
+
 }
-function Index({auth,data,filters}:Props) {
+function Index({auth,data,filters,departments}:Props) {
 
     let jobs:JobOpening[] = data.data
     const columns: ColumnsType<JobOpening> = [
@@ -41,7 +43,7 @@ function Index({auth,data,filters}:Props) {
             title: "Salary",
             dataIndex: "salary",
             key: "salary",
-            render: (salary) => (salary ? `KSH ${salary.toFixed(2)}` : "Not specified"),
+            render: (salary) => (salary ? `KSH ${Number.parseInt(salary).toFixed(2)}` : "Not specified"),
         },
         {
             title: "Employment Type",
@@ -65,6 +67,8 @@ function Index({auth,data,filters}:Props) {
         delete queryParams.search
         router.get(route("departments.index"), queryParams,);
     }
+
+    console.log(data)
     return (
         <AuthenticatedLayout
             header={
@@ -84,7 +88,7 @@ function Index({auth,data,filters}:Props) {
         >
             <Head title="Payroll"/>
 
-            <AttendanceTable data={data} filters={filters} route_redirect={"payroll.index"} columns={columns}/>
+            <JobsListing data={data} filters={filters} departments={departments}/>
 
         </AuthenticatedLayout>
     );

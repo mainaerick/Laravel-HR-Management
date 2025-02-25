@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('location')->nullable();
             $table->decimal('salary', 10, 2)->nullable();
             $table->enum('employment_type', ['full-time', 'part-time', 'remote']);
+            $table->enum('status', ['active', 'inactive', 'completed'])->default('active');
             $table->timestamps();
             $table->softDeletes();
         });

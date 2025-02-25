@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Department;
 use App\Models\JobOpening;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -27,8 +28,11 @@ class JobOpeningController extends Controller
 
         $jobOpenings = $query->paginate($perPage);
 
+        $departments = Department::all();
+
         return Inertia::render('JobOpenings/Index', [
             'data' => $jobOpenings,
+            'departments' => $departments,
             'filters' => $request->only(['search']),
         ]);
     }

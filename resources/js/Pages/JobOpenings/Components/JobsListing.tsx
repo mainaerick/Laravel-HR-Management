@@ -1,33 +1,18 @@
 import React, {useState} from 'react';
-import {
-    Button,
-    Card,
-    Checkbox, Col,
-    Flex,
-    Input,
-    Modal,
-    Pagination, Radio, Row,
-    Select,
-    Table,
-    TableColumnsType,
-    Tag,
-    Typography
-} from "antd";
-import {Attendance} from "@/Pages/Attendance/Core/Model";
-import {ColumnsType} from "antd/es/table";
-import {Employee} from "@/Pages/Employees/core/Model";
-import {router} from "@inertiajs/react";
-import {PaginatedData} from "@/Core/Models";
-import {FilterOutlined, PlusOutlined, SearchOutlined} from "@ant-design/icons";
+import {Button, Card, Flex, Input, Modal} from "antd";
+import {PlusOutlined, SearchOutlined} from "@ant-design/icons";
 import {Department} from "@/Pages/Departments/Core/Model";
+import {PaginatedData} from "@/Core/Models";
+import {router} from "@inertiajs/react";
+import Create from "@/Pages/JobOpenings/Create";
 
-
-type Props = {
-    data:PaginatedData, filters: any,passed_params?:any,route_redirect:string,columns:any,departments?:Department[]
+type Props={
+    data:PaginatedData, filters:any, departments:Department[],passed_params?:any
 }
-function AttendanceTable({data,filters,passed_params,route_redirect,columns,departments}:Props) {
-
+function JobsListing({data, filters, departments,passed_params}:Props) {
+    const [createModalOpen, setCreateModalOpen] = useState(false);
     let datasource:any[] = data.data
+    let route_redirect =''
     let queryParams = {
         per_page: data.per_page,
         page: data.current_page,
@@ -73,7 +58,9 @@ function AttendanceTable({data,filters,passed_params,route_redirect,columns,depa
 
         router.get(route(route_redirect, passed_params?.id ? { id: passed_params.id } : {}), queryParams, { preserveScroll: true });
     }
-
+    const onNewJob = ()=>{
+        setCreateModalOpen(true)
+    }
 
     return (
         <Card className={"mr-6"} style={{borderRadius: "10px"}}>
@@ -83,40 +70,22 @@ function AttendanceTable({data,filters,passed_params,route_redirect,columns,depa
                        onClear={onSearchClear} prefix={<SearchOutlined/>} style={{width: 300, borderRadius: 10}}/>
 
 
-
-            </Flex>
-            <Table scroll={{y: 500}}
-                   columns={columns}
-                   dataSource={datasource}
-                   rowKey="id"
-                   pagination={false}
-            />
-            <Flex justify={"space-between"} align={"center"} className={"mt-3"}>
-                <Flex gap={"large"} align={"center"}><Typography.Text
-                    className={"text-gray-400"}>{"Showing"}</Typography.Text><Select
-                    defaultValue={data.per_page}
-                    style={{width: 120}}
-                    onChange={handlePerPageChange}
-                    options={[
-                        {value: 10, label: 10},
-                        {value: 20, label: 20},
-                        {value: 50, label: 50},
-                        {value: 100, label: 100},
-                    ]}
-                /></Flex>
-                <Typography.Text className={"text-gray-400"}>
-                    Showing {data.from} to {data.to} out of {data.total} records
-                </Typography.Text>
-                <Pagination
-                    current={data.current_page}
-                    total={data.total}
-                    pageSize={data.per_page}
-                    onChange={handleTableChange}
-                />
+                <Button style={{borderRadius: 10, paddingTop: "20px", paddingBottom: "20px"}} type="primary" onClick={onNewJob}
+                        icon={<PlusOutlined/>}>
+                    Add New Job
+                </Button>
+                <Modal
+                    title="Vertically centered modal dialog"
+                    centered
+                    open={createModalOpen}
+                    onOk={() => setCreateModalOpen(false)}
+                    onCancel={() => setCreateModalOpen(false)}
+                >
+                    <Create departments={departments}/>
+                </Modal>
             </Flex>
         </Card>
-
     );
 }
 
-export default AttendanceTable;
+export default JobsListing;

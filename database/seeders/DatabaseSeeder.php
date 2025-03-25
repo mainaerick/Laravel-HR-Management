@@ -84,9 +84,11 @@ class DatabaseSeeder extends Seeder
             JobOpening::create([
                 'title' => $faker->jobTitle,
                 'department_id' => $departments->random()->id ?? null,
-                'location' => $faker->city,
-                'salary' => $faker->randomFloat(2, 50000, 200000),
-                'employment_type' => $faker->randomElement(['full-time', 'part-time', 'remote']),
+                'city' => $faker->city,
+                'salary' => $faker->randomFloat(0, 50000, 200000),
+                'employment_type' => $faker->randomElement(['full-time', 'part-time','internship']),
+                'location' => $faker->randomElement(['office', 'remote', 'hybrid']),
+                'status' => $faker->randomElement(['active', 'inactive', 'completed'])
             ]);
         }
     }

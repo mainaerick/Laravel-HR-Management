@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('job_openings', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->string('city');
             $table->foreignId('department_id')->nullable()->constrained('departments')->nullOnDelete();
-            $table->string('location')->nullable();
-            $table->decimal('salary', 10, 2)->nullable();
-            $table->enum('employment_type', ['full-time', 'part-time', 'remote']);
+            $table->enum('location', ['office', 'remote', 'hybrid']);
+            $table->decimal('salary', 10, 0)->nullable();
+            $table->enum('employment_type', ['full-time', 'part-time','internship']);
             $table->enum('status', ['active', 'inactive', 'completed'])->default('active');
             $table->timestamps();
             $table->softDeletes();

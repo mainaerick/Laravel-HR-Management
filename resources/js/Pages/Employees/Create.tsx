@@ -30,7 +30,6 @@ function Create({departments}: Props) {
 
     const handleSubmit = () => {
 
-        console.log(data)
         setData("salary_slip_names", data.salary_slips.map((file) => file.name));
         post(route("employee.store"),{
             onSuccess: () => {

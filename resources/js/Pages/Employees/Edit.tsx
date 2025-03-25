@@ -25,14 +25,14 @@ function Edit({employee,departments}: Props) {
             onSuccess: () => {
                 messageApi.open({
                     type: "success",
-                    content: "Product Updated",
+                    content: "Eployee Updated",
                 });
             },
             onProgress: () => {
                 // setLoading(true);
                 messageApi.open({
                     type: "loading",
-                    content: "Product Updating..",
+                    content: "Employee Updating...",
                 });
             },
             onError: (e) => {

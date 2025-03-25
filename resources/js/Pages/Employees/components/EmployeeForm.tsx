@@ -123,7 +123,6 @@ function EmployeeForm({data,setData,departments,handleSubmit}:Props) {
                 })}
 
             </Tabs>
-
         </Form>
     );
 }

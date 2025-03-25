@@ -15,58 +15,12 @@ import {ColumnsType} from "antd/es/table";
 import JobsListing from "@/Pages/JobOpenings/Components/JobsListing";
 
 type Props = {
-    auth: any, filters:any,data:any,departments:Department[]
+    auth: any, filters:any,data:any,departments:Department[],jobOpening:JobOpening
 
 }
-function Index({auth,data,filters,departments}:Props) {
+function Index({auth,data,filters,departments,jobOpening}:Props) {
 
-    let jobs:JobOpening[] = data.data
-    const columns: ColumnsType<JobOpening> = [
-        {
-            title: "Title",
-            dataIndex: "title",
-            key: "title",
-        },
-        {
-            title: "Department",
-            dataIndex: ["department", "name"],
-            key: "department",
-            render: (text) => text || "N/A",
-        },
-        {
-            title: "Location",
-            dataIndex: "location",
-            key: "location",
-            render: (text) => text || "Remote",
-        },
-        {
-            title: "Salary",
-            dataIndex: "salary",
-            key: "salary",
-            render: (salary) => (salary ? `KSH ${Number.parseInt(salary).toFixed(2)}` : "Not specified"),
-        },
-        {
-            title: "Employment Type",
-            dataIndex: "employment_type",
-            key: "employment_type",
-        },
-    ];
-    let queryParams = {
-        per_page: data.per_page,
-        page: data.current_page,
-        search: filters.search,
-    }
-    const onSearch = (e) => {
-        const value = e.target.value
-        if (value) {
-            queryParams.search = value
-            router.get(route("departments.index"), queryParams,);
-        }
-    }
-    const onSearchClear = () => {
-        delete queryParams.search
-        router.get(route("departments.index"), queryParams,);
-    }
+    let jobs:JobOpening[] = data?.data
 
     console.log(data)
     return (
@@ -88,7 +42,7 @@ function Index({auth,data,filters,departments}:Props) {
         >
             <Head title="Payroll"/>
 
-            <JobsListing data={data} filters={filters} departments={departments}/>
+            <JobsListing groupeddata={data} filters={filters} departments={departments} jobOpening={jobOpening}/>
 
         </AuthenticatedLayout>
     );

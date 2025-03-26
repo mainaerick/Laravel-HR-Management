@@ -3,12 +3,15 @@
 namespace Database\Seeders;
 
 use App\Models\Attendance;
+use App\Models\Candidate;
 use App\Models\Department;
 use App\Models\Employee;
 use App\Models\JobOpening;
+use App\Models\Leave;
 use App\Models\Payroll;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Faker\Factory as Faker;
@@ -91,5 +94,41 @@ class DatabaseSeeder extends Seeder
                 'status' => $faker->randomElement(['active', 'inactive', 'completed'])
             ]);
         }
+
+        foreach (range(1, 50) as $_) {
+            Candidate::create([
+                'job_id' => JobOpening::all()->random()->id,
+                'name' => $faker->name(),
+                'email' => $faker->unique()->safeEmail(),
+                'phone' => $faker->phoneNumber(),
+                'application_date' => $faker->date(),
+                'status' => $faker->randomElement(['selected', 'rejected', 'in-process']),
+            ]);
+        }
+
+        foreach (range(1, 50) as $_) {
+            $startDate = Carbon::parse($faker->date());
+            $endDate = Carbon::parse($faker->date())->addDays(rand(1, 30));
+            Leave::create([
+                'employee_id' => Employee::all()->random()->id,
+                'manager_id' => Employee::all()->random()->id,
+                'start_date' => $startDate,
+                'end_date' => $endDate,
+                'days' => $this->calculateBusinessDays($startDate, $endDate),
+                'status' => $faker->randomElement(['approved', 'pending', 'rejected']),
+            ]);
+        }
+    }
+
+    private function calculateBusinessDays(Carbon $start, Carbon $end): int
+    {
+        $days = 0;
+        while ($start->lte($end)) {
+            if (!$start->isWeekend()) {
+                $days++;
+            }
+            $start->addDay();
+        }
+        return $days;
     }
 }

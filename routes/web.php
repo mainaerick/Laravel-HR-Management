@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\CandidateController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\JobOpeningController;
+use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Payroll;
@@ -80,7 +82,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('jobopenings/{id}', [JobOpeningController::class, 'update'])->name('jobopening.update');
     Route::post('jobopenings', [JobOpeningController::class, 'store'])->name('jobopening.store');
 });
+//Candidates Routes
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('candidate', [CandidateController::class, 'index'])->name('candidates.index');
+});
+//Leaves Routes
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('leaves', [LeaveController::class, 'index'])->name('leaves.index');
 
+});
 //Profile rotes
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

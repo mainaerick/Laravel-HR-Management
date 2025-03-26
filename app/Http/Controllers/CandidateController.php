@@ -4,15 +4,33 @@ namespace App\Http\Controllers;
 
 use App\Models\Candidate;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class CandidateController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $per_page = 10;
+        $query = Candidate::with('job_opening');
+
+
+        if ($request->has('search')) {
+            $search = $request->get('search');
+            $query->whereHas('employee', function ($q) use ($search) {
+                $q->where('first_name', 'LIKE', "%{$search}%")
+                    ->orWhere('last_name', 'LIKE', "%{$search}%")
+                    ->orWhere('email', 'LIKE', "%{$search}%");
+            });
+        }
+
+        $candidates=$query->paginate($per_page);
+        return Inertia::render('Candidates/Index', [
+            'data' => $candidates,
+            'filters' => $request->only(['search']),
+        ]);
     }
 
     /**

@@ -13,13 +13,14 @@ return new class extends Migration
     {
         Schema::create('candidates', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('job_id')->constrained('jobs')->onDelete('cascade');
+            $table->foreignId('job_id')->constrained('job_openings')->onDelete('cascade');
             $table->string('name');
             $table->string('email');
             $table->string('phone')->nullable();
             $table->date('application_date');
             $table->enum('status', ['selected', 'rejected', 'in-process'])->default('in-process');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

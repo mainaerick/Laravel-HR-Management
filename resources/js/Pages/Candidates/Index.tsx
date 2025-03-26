@@ -43,7 +43,6 @@ function Index({data,filters}:Props) {
         },
 
     ];
-    console.log(data)
     return (
         <AuthenticatedLayout
             header={

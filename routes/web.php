@@ -89,7 +89,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 //Leaves Routes
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('leaves', [LeaveController::class, 'index'])->name('leaves.index');
-
+    Route::put('leaves/{id}', [LeaveController::class, 'update'])->name('leave.update');
 });
 //Profile rotes
 Route::middleware('auth')->group(function () {

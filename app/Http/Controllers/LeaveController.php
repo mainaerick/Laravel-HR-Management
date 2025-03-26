@@ -13,7 +13,7 @@ class LeaveController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Leave::with(['employee', 'manager']);
+        $query = Leave::with(['employee']);
         if ($request->has('search')) {
             $search = $request->get('search');
             $query->whereHas('employee', function ($q) use ($search) {
@@ -24,7 +24,7 @@ class LeaveController extends Controller
         }
         $leaves = $query->latest()->paginate(10);
         return Inertia::render('Leave/Index', [
-            'leaves' => $leaves,
+            'leavedata' => $leaves,
             'filters' => $request->only(['search']),
         ]);
     }
@@ -64,9 +64,15 @@ class LeaveController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Leave $leave)
+    public function update(Request $request,  $id)
     {
-        //
+        $validated = $request->validate([
+            'status' => 'required|in:pending,approved,rejected',
+        ]);
+        $leave=Leave::findOrFail($id);
+
+        $leave->update($validated);
+        return redirect()->back()->with('success', 'Leave status updated successfully.');
     }
 
     /**

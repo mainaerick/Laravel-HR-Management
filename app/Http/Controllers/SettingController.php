@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class SettingController extends Controller
 {
@@ -12,7 +13,10 @@ class SettingController extends Controller
      */
     public function index()
     {
-        //
+        $settings = Setting::all();
+        return Inertia::render('Settings/Index', [
+            'settings' => $settings,
+        ]);
     }
 
     /**
@@ -50,9 +54,16 @@ class SettingController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Setting $setting)
+    public function update(Request $request, $key)
     {
-        //
+        $request->validate([
+            'value' => 'required|string|max:255',
+        ]);
+
+        $setting = Setting::updateOrCreate(['key' => $key], ['value' => $request->value]);
+
+        return response()->json(['message' => 'Setting updated successfully', 'data' => $setting]);
+
     }
 
     /**

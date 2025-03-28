@@ -1,19 +1,20 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
     Button,
     Card,
-    Checkbox, CheckboxProps, Col,
+    Checkbox,
+    Col,
     Flex,
     Input,
     Modal,
-    Pagination, Row,
+    Pagination,
+    Row,
     Select,
     Table,
-    TableColumnsType,
-    Typography
-    , Radio, RadioChangeEvent, GetProp, notification
+    Typography,
+    Radio,
+    notification
 } from 'antd';
-import {Employee} from "@/Pages/Employees/core/Model";
 import {
     DeleteOutlined,
     EditOutlined,
@@ -21,247 +22,119 @@ import {
     FilterOutlined,
     PlusOutlined,
     SearchOutlined
-} from "@ant-design/icons";
-import {PaginatedData} from "@/Core/Models";
-import {router} from "@inertiajs/react";
-import {SearchProps} from "antd/lib/input";
-import {Department} from "@/Pages/Departments/Core/Model";
+} from '@ant-design/icons';
+import { router } from '@inertiajs/react';
 
-
-
-const EmployeeTable: React.FC<{ data: PaginatedData, filters: any,route_redirect:string,passed_params?:any,departments?:Department[] }> = ({
-                                                                                                       data,
-                                                                                                       filters,route_redirect,passed_params,departments
-                                                                                                   }) => {
-
-    const generateEmployeeColumns = (): TableColumnsType<Employee> => {
-        const columns: TableColumnsType<Employee> = [
-            {
-                title: 'Name',
-                dataIndex: 'first_name',
-                key: 'first_name',
-                render: (text, record) => (
-                    <a>{`${record.first_name} ${record.last_name}`}</a>
-                ),
-            },
-            {
-                title: 'Employment ID',
-                dataIndex: 'employee_id',
-                key: 'employee_id',
-                responsive: ['md'],
-            },
-            {
-                title: 'Department',
-                dataIndex: 'department_id',
-                key: 'department_id',
-                render:(text,item)=> <span>{item.department?.name}</span>
-            },
-            {
-                title: 'Designation',
-                dataIndex: 'designation',
-                key: 'designation',
-                responsive: ['md'],
-            },
-            {
-                title: 'Type',
-                dataIndex: 'location_type',
-                key: 'type',
-                responsive: ['lg'],
-            },
-            {
-                title: 'Status',
-                dataIndex: 'employment_type',
-                key: 'employment_type',
-                responsive: ['lg'],
-            },
-            {
-                title: 'Action',
-                dataIndex: 'join_date',
-                key: 'join_date',
-                render: (text,item) => <Flex gap={"middle"}>
-                    <EyeOutlined onClick={()=> router.get(route("employee.show", item.id))} style={{fontSize: "18px"}}/>
-                    <EditOutlined style={{fontSize: "18px"}} onClick={()=> router.get(route("employee.edit", item.id))}/>
-                    <DeleteOutlined onClick={()=>handleDelete(item.id)} style={{fontSize: "18px"}}/></Flex>,
-            },
-
-        ];
-
-        return columns;
-    };
-    const [type, setType]:string|undefined = useState(filters.employment_type);
-    const [selected_departments, setSelectedDepartments]:[] = useState(filters.department_id);
-    const columns = generateEmployeeColumns();
-    const employee: Employee[] = data.data
-    let queryParams = {
-        per_page: data.per_page,
-        page: data.current_page,
-        search: filters.search,
-        department_id: filters.department_id,
-        employment_type: filters.employment_type
-
-    }
-
+const EmployeeTable = ({ data, filters, route_redirect, passed_params, departments }) => {
+    const [type, setType] = useState(filters.employment_type);
+    const [selected_departments, setSelectedDepartments] = useState(filters.department_id);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const showModal = () => {
-        setIsModalOpen(true);
-    };
     const handleDelete = (id) => {
         if (window.confirm('Are you sure you want to delete this employee?')) {
             router.delete(route('employee.destroy', id), {
                 onSuccess: () => {
-                    notification.success({
-                        message: 'Employee Deleted',
-                        description: 'The employee was successfully deleted.',
-                    });
-                },
-                onError: (error) => {
-
+                    notification.success({ message: 'Employee Deleted', description: 'The employee was successfully deleted.' });
                 },
             });
         }
     };
+
     const handleConfirmFilters = () => {
-        // setIsModalOpen(false);
-        queryParams.department_id=selected_departments
-        queryParams.employment_type=type
-        queryParams.page = 1
-        queryParams = {
-            ...queryParams,...passed_params
-        }
+        const queryParams = { ...filters, department_id: selected_departments, employment_type: type, page: 1, ...passed_params };
         router.get(route(route_redirect, passed_params?.id ? { id: passed_params.id } : {}), queryParams, { preserveScroll: true });
     };
 
     const handleFilterReset = () => {
-        setSelectedDepartments([])
-        setType()
-        delete queryParams.department_id
-        delete queryParams.employment_type
-        queryParams = {
-            ...queryParams,...passed_params
-        }
-        router.get(route(route_redirect, passed_params?.id ? { id: passed_params.id } : {}), queryParams, { preserveScroll: true });
-        // setIsModalOpen(false);
-    };
-    const handleTableChange = (page: number) => {
-        queryParams = {
-            ...queryParams,...passed_params,page : page
-        }
-
-        router.get(route(route_redirect, passed_params?.id ? { id: passed_params.id } : {}), queryParams, { preserveScroll: true });
-
-    };
-    const handlePerPageChange = (value: number) => {
-        queryParams.per_page = value
-        queryParams = {
-            ...queryParams,...passed_params
-        }
-
+        setSelectedDepartments([]);
+        setType(undefined);
+        const queryParams = { ...filters, page: 1, ...passed_params };
         router.get(route(route_redirect, passed_params?.id ? { id: passed_params.id } : {}), queryParams, { preserveScroll: true });
     };
+
+    const handleTableChange = (page) => {
+        const queryParams = { ...filters, page, ...passed_params };
+        router.get(route(route_redirect, passed_params?.id ? { id: passed_params.id } : {}), queryParams, { preserveScroll: true });
+    };
+
+    const handlePerPageChange = (value) => {
+        const queryParams = { ...filters, per_page: value, ...passed_params };
+        router.get(route(route_redirect, passed_params?.id ? { id: passed_params.id } : {}), queryParams, { preserveScroll: true });
+    };
+
     const onSearch = (e) => {
-
-        const value = e.target.value
+        const value = e.target.value;
         if (value) {
-            queryParams.search = value
-            queryParams.page = 1
-            queryParams = {
-                ...queryParams,...passed_params
-            }
-
+            const queryParams = { ...filters, search: value, page: 1, ...passed_params };
             router.get(route(route_redirect, passed_params?.id ? { id: passed_params.id } : {}), queryParams, { preserveScroll: true });
         }
+    };
 
-    }
     const onSearchClear = () => {
-        delete queryParams.search
-        queryParams = {
-            ...queryParams,...passed_params
-        }
-
+        const queryParams = { ...filters, search: undefined, ...passed_params };
         router.get(route(route_redirect, passed_params?.id ? { id: passed_params.id } : {}), queryParams, { preserveScroll: true });
-    }
-    const onDepartmentChange: GetProp<typeof Checkbox.Group, 'onChange'> = (checkedValues) => {
-        console.log(checkedValues);
-        setSelectedDepartments(checkedValues)
     };
-    const onTypeChange = (e: RadioChangeEvent) => {
-        console.log('radio checked', e.target.value);
-        setType(e.target.value)
-    };
-    const onNewEmployee = ()=>{
-        router.get(route("employee.create"))
-    }
+
+    const columns = [
+        {
+            title: 'Name',
+            dataIndex: 'first_name',
+            key: 'first_name',
+            render: (text, record) => <a>{`${record.first_name} ${record.last_name}`}</a>,
+        },
+        {
+            title: 'Employment ID',
+            dataIndex: 'employee_id',
+            key: 'employee_id',
+            responsive: ['md'],
+        },
+        {
+            title: 'Department',
+            dataIndex: 'department_id',
+            key: 'department_id',
+            render: (text, item) => <span>{item.department?.name}</span>,
+        },
+        {
+            title: 'Action',
+            key: 'action',
+            render: (text, item) => (
+                <Flex gap="middle">
+                    <EyeOutlined onClick={() => router.get(route('employee.show', item.id))} style={{ fontSize: '18px' }} />
+                    <EditOutlined onClick={() => router.get(route('employee.edit', item.id))} style={{ fontSize: '18px' }} />
+                    <DeleteOutlined onClick={() => handleDelete(item.id)} style={{ fontSize: '18px' }} />
+                </Flex>
+            ),
+        },
+    ];
+
     return (
-        <Card className={"mr-6"} style={{borderRadius: "10px"}}>
-            <Flex justify={"space-between"} gap={"middle"} className={"mb-6"}>
-                {/*<Search enterButton={false} placeholder="input search text" onSearch={onSearch} style={{ width: 200 }} />*/}
-                <Input size="large" placeholder="Search" value={filters?.search} allowClear onPressEnter={onSearch}
-                       onClear={onSearchClear} prefix={<SearchOutlined/>} style={{width: 300, borderRadius: 10}}/>
-                <Flex justify={"space-between"} gap={"middle"}>
-                    <Button style={{borderRadius: 10, paddingTop: "20px", paddingBottom: "20px"}} type="primary" onClick={onNewEmployee}
-                            icon={<PlusOutlined/>}>
-                        Add New Employee
-                    </Button>
-                    <div>
-                        <Button type="default" onClick={showModal} icon={<FilterOutlined/>}
-                                style={{borderRadius: 10, paddingTop: "20px", paddingBottom: "20px"}}>
-                            Filter
-                        </Button>
-                        <Modal title="Filter" open={isModalOpen} cancelText={"Reset"} onOk={handleConfirmFilters} onCancel={handleFilterReset}>
-                            <Card>
-                                <Flex vertical={true} gap={"middle"}>
-                                    {departments&&<Flex vertical={true} gap={"middle"}>
-                                        <Typography.Text className={"font-bold text-md"}>Department</Typography.Text>
-                                        <Checkbox.Group style={{width: '100%'}} value={selected_departments}
-                                                        onChange={onDepartmentChange}>
-                                            <Row>
-
-                                                {departments.map((department: Department) => {
-                                                    return <Col span={12}><Checkbox
-                                                        className={"font-medium text-gray-600"}
-                                                        value={department.id.toString()}>{department.name}</Checkbox></Col>
-                                                })}
-                                            </Row></Checkbox.Group>
-
-
-                                    </Flex>}
-                                    <Flex vertical={true} gap={"middle"}>
-                                        <Typography.Text className={"font-bold text-md"}>Select Type</Typography.Text>
-                                        <Radio.Group onChange={onTypeChange} value={type}>
-                                            <Radio className={"font-medium text-gray-600"}
-                                                   value={"office"}>Office</Radio>
-                                            <Radio className={"font-medium text-gray-600"} value={"remote"}>Work from
-                                                Home</Radio>
-                                        </Radio.Group>
-                                    </Flex>
-                                </Flex>
-                            </Card>
-                        </Modal>
-                    </div>
+        <Card style={{ borderRadius: '10px' }}>
+            <Flex justify="space-between" className="mb-6">
+                <Input size="large" placeholder="Search" allowClear onPressEnter={onSearch} onClear={onSearchClear} prefix={<SearchOutlined />} style={{ width: '100%', maxWidth: 300, borderRadius: 10 }} />
+                <Button type="primary" onClick={() => router.get(route('employee.create'))} icon={<PlusOutlined />} style={{ borderRadius: 10 }}>Add New</Button>
+                <Button type="default" onClick={() => setIsModalOpen(true)} icon={<FilterOutlined />} style={{ borderRadius: 10 }}>Filter</Button>
+            </Flex>
+            <Table columns={columns} pagination={false} dataSource={data.data} rowKey="user_id" scroll={{ x: 'max-content', y: 500 }} />
+            <Flex justify="space-between" align="center" className="mt-3 flex-wrap gap-4">
+                <Flex gap="large" align="center">
+                    <Typography.Text className="text-gray-400">Showing</Typography.Text>
+                    <Select
+                        defaultValue={data.per_page}
+                        style={{ width: 120 }}
+                        onChange={handlePerPageChange}
+                        options={[
+                            { value: 10, label: 10 },
+                            { value: 20, label: 20 },
+                            { value: 50, label: 50 },
+                            { value: 100, label: 100 }
+                        ]}
+                    />
                 </Flex>
 
-
-            </Flex>
-
-            <Table scroll={{y: 500}} columns={columns} pagination={false} dataSource={employee} rowKey="user_id"/>
-
-            <Flex justify={"space-between"} align={"center"} className={"mt-3"}>
-                <Flex gap={"large"} align={"center"}><Typography.Text
-                    className={"text-gray-400"}>{"Showing"}</Typography.Text><Select
-                    defaultValue={data.per_page}
-                    style={{width: 120}}
-                    onChange={handlePerPageChange}
-                    options={[
-                        {value: 10, label: 10},
-                        {value: 20, label: 20},
-                        {value: 50, label: 50},
-                        {value: 100, label: 100},
-                    ]}
-                /></Flex>
-                <Typography.Text className={"text-gray-400"}>
+                <Typography.Text className="text-gray-400">
                     Showing {data.from} to {data.to} out of {data.total} records
                 </Typography.Text>
+
                 <Pagination
                     current={data.current_page}
                     total={data.total}
@@ -269,8 +142,23 @@ const EmployeeTable: React.FC<{ data: PaginatedData, filters: any,route_redirect
                     onChange={handleTableChange}
                 />
             </Flex>
-
-        </Card>);
+            <Modal title="Filter" open={isModalOpen} onOk={handleConfirmFilters} onCancel={handleFilterReset}>
+                <Card>
+                    <Flex vertical>
+                        {departments && (
+                            <Checkbox.Group value={selected_departments} onChange={setSelectedDepartments}>
+                                <Row>{departments.map(dept => <Col span={12} key={dept.id}><Checkbox value={dept.id.toString()}>{dept.name}</Checkbox></Col>)}</Row>
+                            </Checkbox.Group>
+                        )}
+                        <Radio.Group onChange={e => setType(e.target.value)} value={type}>
+                            <Radio value="office">Office</Radio>
+                            <Radio value="remote">Remote</Radio>
+                        </Radio.Group>
+                    </Flex>
+                </Card>
+            </Modal>
+        </Card>
+    );
 };
 
 export default EmployeeTable;

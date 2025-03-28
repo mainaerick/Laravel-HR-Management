@@ -9,6 +9,7 @@ use App\Models\Employee;
 use App\Models\JobOpening;
 use App\Models\Leave;
 use App\Models\Payroll;
+use App\Models\Setting;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Carbon\Carbon;
@@ -117,6 +118,20 @@ class DatabaseSeeder extends Seeder
                 'days' => $this->calculateBusinessDays($startDate, $endDate),
                 'status' => $faker->randomElement(['approved', 'pending', 'rejected']),
             ]);
+        }
+
+
+        $settings = [
+            ['key' => 'appearance', 'value' => 'light'],
+            ['key' => 'language', 'value' => 'English'],
+            ['key' => 'two_factor_auth', 'value' => 'enabled'],
+            ['key' => 'mobile_notifications', 'value' => 'enabled'],
+            ['key' => 'desktop_notifications', 'value' => 'enabled'],
+            ['key' => 'email_notifications', 'value' => 'enabled'],
+        ];
+
+        foreach ($settings as $setting) {
+            Setting::updateOrCreate(['key' => $setting['key']], ['value' => $setting['value']]);
         }
     }
 

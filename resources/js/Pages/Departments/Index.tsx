@@ -15,7 +15,6 @@ function Index({auth,data,filters}:Props) {
 
     let departments:Department[] = data.data
 
-    console.log(data)
     let queryParams = {
         per_page: data.per_page,
         page: data.current_page,

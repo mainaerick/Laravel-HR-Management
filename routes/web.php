@@ -8,6 +8,7 @@ use App\Http\Controllers\JobOpeningController;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SettingController;
 use App\Models\Payroll;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -96,6 +97,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+//Settings Routes
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
+    Route::patch('/settings/{key}', [SettingController::class, 'settings.update']);
 });
 Route::get('/files/{path}', function ($path) {
     $path = 'public/images/' . $path;

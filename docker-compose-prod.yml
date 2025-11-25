@@ -24,8 +24,6 @@ services:
     depends_on:
       - hr_mysql
       - hr_redis
-      - hr_mailpit
-      - hr_selenium
   hr_mysql:
     image: 'mysql/mysql-server:8.0'
     ports:
@@ -56,21 +54,7 @@ services:
       retries: 3
       timeout: 5s
 
-  hr_mailpit:
-    image: 'axllent/mailpit:latest'
-    ports:
-      - '${FORWARD_MAILPIT_PORT:-1027}:1025'
-      - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8027}:8025'
-    networks:
-      - hr_net
-  hr_selenium:
-    image: selenium/standalone-chromium
-    extra_hosts:
-      - 'host.docker.internal:host-gateway'
-    volumes:
-      - '/dev/shm:/dev/shm'
-    networks:
-      - hr_net
+
 networks:
   hr_net:
     driver: bridge

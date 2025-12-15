@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
+import {Employee} from "@/Pages/Employees/core/Model";
 
-export const transformEmployeeModel = (employee) => ({
+export const transformEmployeeModel = (employee:Employee) => ({
     ...employee,
     date_of_birth: employee.date_of_birth ? dayjs(employee.date_of_birth) : null,
     join_date: employee.join_date ? dayjs(employee.join_date) : null,
@@ -26,7 +27,7 @@ export const transformEmployeeModel = (employee) => ({
         }]
         : [],
     salary_slips: employee.salary_slips
-        ? employee.salary_slips.map((url, index) => ({
+        ? employee.salary_slips.map((url:any, index:any) => ({
             uid: `${index}`,
             name: `Salary Slip ${index + 1}`,
             url,

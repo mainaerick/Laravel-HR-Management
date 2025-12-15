@@ -25,6 +25,7 @@ class EmployeeController extends Controller
         if ($request->has('per_page')) {
             $per_page = $request->get('per_page');
         }
+//        dd($per_page);
         if ($request->has('department_id') && is_array($request->get('department_id'))) {
             $query->whereIn('department_id', $request->get('department_id'));
         }

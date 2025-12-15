@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import JobCard from "@/Pages/JobOpenings/Components/JobCard";
 import { Card, Divider, List, Skeleton } from "antd";
 import { JobOpening } from "@/Pages/JobOpenings/Core/Model";
@@ -7,8 +7,17 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { router } from "@inertiajs/react";
 
 type Props = {
-    jobs: PaginatedData;
-    jobClick: (jobId: number) => void;
+    jobs: PaginatedData<JobOpening>;
+    jobClick: (jobId: number | string) => void; // FIX: Match JobCard
+};
+
+// Type for what Inertia returns
+type JobResponse = {
+    props: {
+        data: {
+            active: PaginatedData<JobOpening>;
+        };
+    };
 };
 
 function JobsActive({ jobs, jobClick }: Props) {
@@ -22,24 +31,38 @@ function JobsActive({ jobs, jobClick }: Props) {
 
         setLoading(true);
 
-        router.get(route("jobopenings.index", { status: "active", page: page + 1 }), {}, {
-            preserveScroll: true,
-            preserveState: true,
-            only: ['data'],
-            onSuccess: (response) => {
-                const newJobs = response.props.data.active.data;
+        router.get(
+            route("jobopenings.index", { status: "active", page: page + 1 }),
+            {},
+            {
+                preserveScroll: true,
+                preserveState: true,
+                only: ['data'],
 
-                setData(prevData => [...prevData, ...newJobs]);
-                setPage(response.props.data.active.current_page);
-                setHasMore(response.props.data.active.current_page < response.props.data.active.last_page);
-            },
-            onFinish: () => setLoading(false),
-        });
+                onSuccess: (response) => {
+                    const res = response as unknown as JobResponse;
+
+                    const newJobs = res.props.data.active.data;
+
+                    setData(prevData => [...prevData, ...newJobs]);
+                    setPage(res.props.data.active.current_page);
+                    setHasMore(
+                        res.props.data.active.current_page <
+                        res.props.data.active.last_page
+                    );
+                },
+
+                onFinish: () => setLoading(false),
+            }
+        );
     };
 
     useEffect(() => {
-        setData(jobs.data)
+        setData(jobs.data);
+        setPage(jobs.current_page);
+        setHasMore(jobs.current_page < jobs.last_page);
     }, [jobs]);
+
     return (
         <Card title="Active Jobs" style={{ margin: 0, padding: 0 }}>
             <div id="scrollableDiv-active" style={{ height: 600, overflow: 'auto', margin: 0, padding: 0 }}>
@@ -72,4 +95,5 @@ function JobsActive({ jobs, jobClick }: Props) {
         </Card>
     );
 }
+
 export default JobsActive;

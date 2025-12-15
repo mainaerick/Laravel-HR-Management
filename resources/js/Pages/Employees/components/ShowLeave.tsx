@@ -41,7 +41,7 @@ const columns: TableProps<DataType>['columns'] = [
         key: 'status',
     },
 ];
-function ShowLeave(props) {
+function ShowLeave() {
     return (
         <Table<DataType> columns={columns} dataSource={[]} />
     );

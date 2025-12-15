@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Employee} from "@/Pages/Employees/core/Model";
 import Authenticated from "@/Layouts/AuthenticatedLayout";
-import {Card, Col, ConfigProvider, GetProp, Menu, MenuProps, Row, Tabs, TabsProps} from "antd";
+import {Card, Col, ConfigProvider, Flex, GetProp, Menu, MenuProps, Row, Tabs, TabsProps, Typography} from "antd";
 import PersonalInfoForm from "@/Pages/Employees/components/PersonalInfoForm";
 import {FileTextOutlined, LaptopOutlined, LockOutlined, UserOutlined} from "@ant-design/icons";
 import ProfessionalInfoForm from "@/Pages/Employees/components/ProfessionalInfoForm";
@@ -91,12 +91,25 @@ function Show({employee}: Props) {
         },
     ];
 
-    const onClickMenuItem = ({item, key, keyPath, domEvent}) => {
+    const onClickMenuItem = ({key}: any) => {
         setSelectedSideMenuKey(key)
     }
     const activeComponent = sidetabs.find((tab) => tab.key === selectedSideMenuKey)?.children;
     return (
-        <Authenticated>
+        <Authenticated header={<Flex vertical={true} className={"m-0"}>
+            <span style={{height: 23}}>
+                <Typography.Text style={{fontSize: 20}} className="font-semibold m-0 p-0 leading-tight text-gray-800 dark:text-gray-800">
+                    Employee View
+                </Typography.Text>
+            </span>
+
+            <span>
+                <Typography.Text style={{fontSize: 14}} className="m-0 p-0 leading-tight text-gray-800 dark:text-gray-400">
+                    Employee Information
+                </Typography.Text>
+            </span>
+
+        </Flex>}>
             <Card className={"mr-6"}>
                 <Row gutter={12}>
                     <Col span={8}>
@@ -117,7 +130,7 @@ function Show({employee}: Props) {
                                 items={sidetabs.map(({key, label}) => ({key, label}))}
                                 onClick={onClickMenuItem}
                             />
-                            </ConfigProvider>
+                        </ConfigProvider>
                     </Col>
                     <Col span={16}>
                         {activeComponent}

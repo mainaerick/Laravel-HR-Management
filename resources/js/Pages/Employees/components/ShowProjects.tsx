@@ -40,7 +40,7 @@ const columns: TableProps<DataType>['columns'] = [
         key: 'status',
     },
 ];
-function ShowProjects(props) {
+function ShowProjects() {
     return (
         <Table<DataType> columns={columns} dataSource={[]} />
     );

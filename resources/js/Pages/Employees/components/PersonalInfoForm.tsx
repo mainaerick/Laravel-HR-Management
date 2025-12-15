@@ -14,16 +14,16 @@ function PersonalInfoForm({setData}: Props) {
     const [fileList, setFileList] = useState([]);
     const [preview, setPreview] = useState({ visible: false, image: "" });
 
-    const handleUploadChange = (info) => {
+    const handleUploadChange = (info:any) => {
         // Extract the originFileObj from the fileList
-        const updatedFileList = info.fileList.map((file) => file.originFileObj).filter(Boolean);
+        const updatedFileList = info.fileList.map((file:any) => file.originFileObj).filter(Boolean);
 
         // Set the single file (originFileObj) as the profile picture
         setData('profile_pic', updatedFileList[0] || null); // Only keep the first file or null if empty
         setFileList(info.fileList); // Keep the file list for UI purposes
     };
 
-    const getBase64 = (file) => {
+    const getBase64 = (file:any) => {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.readAsDataURL(file); // Read the file as a Data URL (Base64)
@@ -31,7 +31,7 @@ function PersonalInfoForm({setData}: Props) {
             reader.onerror = (error) => reject(error);
         });
     };
-    const handlePreview = async (file) => {
+    const handlePreview = async (file:any) => {
         if (!file.url && !file.preview) {
             file.preview = await getBase64(file.originFileObj);
         }
@@ -40,7 +40,7 @@ function PersonalInfoForm({setData}: Props) {
             image: file.url || file.preview,
         });
     };
-    const beforeUpload = (file) => {
+    const beforeUpload = (file:any) => {
         const isImage = file.type.startsWith("image/");
         if (!isImage) {
             message.error("You can only upload image files!");

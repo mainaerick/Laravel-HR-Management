@@ -75,7 +75,7 @@ function Create ({departments,setData,handleSubmit,clickedJobData}:CreateProps){
                         placeholder="Enter Salary Amount"
                         size="large"
                         type="number"
-                        defaultValue={clickedJobData?.salary}
+                        defaultValue={clickedJobData?.salary as number}
                         onChange={(e) => setData("salary", e.target.value)}
                     />
                 </Form.Item>

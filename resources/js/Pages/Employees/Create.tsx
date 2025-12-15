@@ -30,7 +30,7 @@ function Create({departments}: Props) {
 
     const handleSubmit = () => {
 
-        setData("salary_slip_names", data.salary_slips.map((file) => file.name));
+        setData("salary_slip_names", data.salary_slips.map((file:any) => file.name));
         post(route("employee.store"),{
             onSuccess: () => {
                 messageApi.open({
@@ -45,8 +45,7 @@ function Create({departments}: Props) {
                     content: "Product Updating..",
                 });
             },
-            onError: (e) => {
-                console .log(e)
+            onError: (e:any) => {
                 messageApi.open({
                     type: "error",
                     content: "An error occurred",

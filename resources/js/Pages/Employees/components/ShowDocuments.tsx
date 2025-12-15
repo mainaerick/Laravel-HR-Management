@@ -11,15 +11,7 @@ type IconProp = {
     whichComponent:string
 }
 function ShowDocuments({employee}: Props) {
-    function downloadFile(fileUrl, fileName) {
-        const link = document.createElement('a');
-        link.href = fileUrl;
-        link.download = fileName; // Optional: Suggests a filename for download
-        link.target = '_blank';  // Opens in a new tab if the URL is an external resource
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
+
     const Icons = ({whichComponent}:IconProp) => {
         return (
             <Flex justify={"space-between"} gap={12} align={"center"}>
@@ -76,21 +68,21 @@ function ShowDocuments({employee}: Props) {
                     </Flex>
                 </Card></Col>}
 
-                {employee.salary_slips?.length > 0 &&
-                    employee.salary_slips?.map((salary_slip,key) => {
-                        return (<Col key={key} xs={24} xl={12} className={"mb-6"}><Card>
-                            <Flex justify={"space-between"} align={"center"}>
-                                <Typography.Text>
-                                    Salary Slip {salary_slip.split('/').pop()}
-                                </Typography.Text>
+                {employee?.salary_slips?.length ? (
+                    employee.salary_slips.map((salary_slip, key) => (
+                        <Col key={key} xs={24} xl={12} className={"mb-6"}>
+                            <Card>
+                                <Flex justify={"space-between"} align={"center"}>
+                                    <Typography.Text>
+                                        Salary Slip {salary_slip.split('/').pop()}
+                                    </Typography.Text>
 
-                                <Icons whichComponent={salary_slip}/>
-                            </Flex>
-                        </Card>
-                        </Col>)
-                    })
-
-                }
+                                    <Icons whichComponent={salary_slip}/>
+                                </Flex>
+                            </Card>
+                        </Col>
+                    ))
+                ) : null}
             </Row>
         </div>
     );

@@ -38,6 +38,16 @@ export default function Login({
                 </div>
             )}
 
+            <div className="flex items-center justify-center w-full space-x-4 text-sm text-gray-600">
+                <p>
+                    Test-User: admin@example.com
+                </p>
+
+                <p>
+                    Password: password
+                </p>
+            </div>
+
             <form onSubmit={submit}>
                 <div>
                     <InputLabel htmlFor="email" value="Email" />

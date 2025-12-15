@@ -29,7 +29,7 @@ function Show({department,employees,filters}:Props) {
             }
         >
 
-            <EmployeeTable data={employees} filters={filters} route_redirect={"department.show"} passed_params={{id:2}}/>
+            <EmployeeTable data={employees} filters={filters} route_redirect={"department.show"} passed_params={{id:2}} departments={[]}/>
 
         </AuthenticatedLayout>
     );

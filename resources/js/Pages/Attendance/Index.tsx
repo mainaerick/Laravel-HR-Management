@@ -59,17 +59,7 @@ function Index({auth,data,filters}:Props) {
         page: data.current_page,
         search: filters.search,
     }
-    const onSearch = (e) => {
-        const value = e.target.value
-        if (value) {
-            queryParams.search = value
-            router.get(route("departments.index"), queryParams,);
-        }
-    }
-    const onSearchClear = () => {
-        delete queryParams.search
-        router.get(route("departments.index"), queryParams,);
-    }
+
     return (
         <AuthenticatedLayout
             header={

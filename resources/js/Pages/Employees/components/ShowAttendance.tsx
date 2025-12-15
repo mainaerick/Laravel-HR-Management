@@ -41,7 +41,7 @@ const columns: TableProps<DataType>['columns'] = [
         key: 'status',
     },
 ];
-function ShowAttendance(props) {
+function ShowAttendance() {
     return (
         <Table<DataType> columns={columns} dataSource={[]} />
     );

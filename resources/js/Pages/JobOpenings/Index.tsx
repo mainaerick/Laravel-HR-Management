@@ -42,7 +42,7 @@ function Index({auth,data,filters,departments,jobOpening}:Props) {
         >
             <Head title="Payroll"/>
 
-            <JobsListing groupeddata={data} filters={filters} departments={departments} jobOpening={jobOpening}/>
+            <JobsListing groupeddata={data} filters={filters} departments={departments} />
 
         </AuthenticatedLayout>
     );

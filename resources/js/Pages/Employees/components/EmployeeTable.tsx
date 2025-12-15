@@ -24,13 +24,17 @@ import {
     SearchOutlined
 } from '@ant-design/icons';
 import { router } from '@inertiajs/react';
+import {Department} from "@/Pages/Departments/Core/Model";
 
-const EmployeeTable = ({ data, filters, route_redirect, passed_params, departments }) => {
+interface Props {
+    data:any, filters:any, route_redirect:any, passed_params:any, departments:Department[]
+}
+const EmployeeTable = ({ data, filters, route_redirect, passed_params, departments }:Props) => {
     const [type, setType] = useState(filters.employment_type);
     const [selected_departments, setSelectedDepartments] = useState(filters.department_id);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const handleDelete = (id) => {
+    const handleDelete = (id:any) => {
         if (window.confirm('Are you sure you want to delete this employee?')) {
             router.delete(route('employee.destroy', id), {
                 onSuccess: () => {
@@ -52,17 +56,17 @@ const EmployeeTable = ({ data, filters, route_redirect, passed_params, departmen
         router.get(route(route_redirect, passed_params?.id ? { id: passed_params.id } : {}), queryParams, { preserveScroll: true });
     };
 
-    const handleTableChange = (page) => {
+    const handleTableChange = (page:any) => {
         const queryParams = { ...filters, page, ...passed_params };
         router.get(route(route_redirect, passed_params?.id ? { id: passed_params.id } : {}), queryParams, { preserveScroll: true });
     };
 
-    const handlePerPageChange = (value) => {
+    const handlePerPageChange = (value:any) => {
         const queryParams = { ...filters, per_page: value, ...passed_params };
         router.get(route(route_redirect, passed_params?.id ? { id: passed_params.id } : {}), queryParams, { preserveScroll: true });
     };
 
-    const onSearch = (e) => {
+    const onSearch = (e:any) => {
         const value = e.target.value;
         if (value) {
             const queryParams = { ...filters, search: value, page: 1, ...passed_params };
@@ -80,7 +84,7 @@ const EmployeeTable = ({ data, filters, route_redirect, passed_params, departmen
             title: 'Name',
             dataIndex: 'first_name',
             key: 'first_name',
-            render: (text, record) => <a>{`${record.first_name} ${record.last_name}`}</a>,
+            render: (text:any, record:any) => <a>{`${record.first_name} ${record.last_name}`}</a>,
         },
         {
             title: 'Employment ID',
@@ -92,12 +96,12 @@ const EmployeeTable = ({ data, filters, route_redirect, passed_params, departmen
             title: 'Department',
             dataIndex: 'department_id',
             key: 'department_id',
-            render: (text, item) => <span>{item.department?.name}</span>,
+            render: (text:any, item:any) => <span>{item.department?.name}</span>,
         },
         {
             title: 'Action',
             key: 'action',
-            render: (text, item) => (
+            render: (text:any, item:any) => (
                 <Flex gap="middle">
                     <EyeOutlined onClick={() => router.get(route('employee.show', item.id))} style={{ fontSize: '18px' }} />
                     <EditOutlined onClick={() => router.get(route('employee.edit', item.id))} style={{ fontSize: '18px' }} />
@@ -111,10 +115,13 @@ const EmployeeTable = ({ data, filters, route_redirect, passed_params, departmen
         <Card style={{ borderRadius: '10px' }}>
             <Flex justify="space-between" className="mb-6">
                 <Input size="large" placeholder="Search" allowClear onPressEnter={onSearch} onClear={onSearchClear} prefix={<SearchOutlined />} style={{ width: '100%', maxWidth: 300, borderRadius: 10 }} />
-                <Button type="primary" onClick={() => router.get(route('employee.create'))} icon={<PlusOutlined />} style={{ borderRadius: 10 }}>Add New</Button>
-                <Button type="default" onClick={() => setIsModalOpen(true)} icon={<FilterOutlined />} style={{ borderRadius: 10 }}>Filter</Button>
+
+                <Flex justify="space-between" align={"center"} gap="middle">
+                    <Button type="default" onClick={() => setIsModalOpen(true)} icon={<FilterOutlined />} style={{ borderRadius: 10 }}>Filter</Button>
+                    <Button type="primary" onClick={() => router.get(route('employee.create'))} icon={<PlusOutlined />} style={{ borderRadius: 10 }}>Add New</Button>
+                </Flex>
             </Flex>
-            <Table columns={columns} pagination={false} dataSource={data.data} rowKey="user_id" scroll={{ x: 'max-content', y: 500 }} />
+            <Table columns={columns as any} pagination={false} dataSource={data.data} rowKey="user_id" scroll={{ x: 'max-content', y: 500 }} />
             <Flex justify="space-between" align="center" className="mt-3 flex-wrap gap-4">
                 <Flex gap="large" align="center">
                     <Typography.Text className="text-gray-400">Showing</Typography.Text>

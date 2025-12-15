@@ -19,7 +19,7 @@ function Edit({employee,departments}: Props) {
 
 
     const handleSubmit = () => {
-        const salaryslipsfilenames = data.salary_slips.map((file) => file.name)
+        const salaryslipsfilenames = data.salary_slips.map((file:any) => file.name)
         setData("salary_slip_names", salaryslipsfilenames);
         post(route("employee.update", { id: data.id }),{
             onSuccess: () => {
@@ -35,8 +35,7 @@ function Edit({employee,departments}: Props) {
                     content: "Employee Updating...",
                 });
             },
-            onError: (e) => {
-                console .log(e)
+            onError: (e:any) => {
                 messageApi.open({
                     type: "error",
                     content: "An error occurred",

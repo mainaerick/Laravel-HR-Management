@@ -1,17 +1,26 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import JobCard from "@/Pages/JobOpenings/Components/JobCard";
 import { Card, Divider, List, Skeleton } from "antd";
 import { JobOpening } from "@/Pages/JobOpenings/Core/Model";
-import InfiniteScroll from "react-infinite-scroll-component";
-import { router } from "@inertiajs/react";
 import { PaginatedData } from "@/Core/Models";
+import InfiniteScroll from 'react-infinite-scroll-component';
+import { router } from "@inertiajs/react";
 
 type Props = {
-    jobs: PaginatedData;
-    jobClick: (jobId: number) => void;
+    jobs: PaginatedData<JobOpening>;
+    jobClick: (jobId: number | string) => void;
 };
 
-function JobsComplete({ jobs ,jobClick}: Props) {
+// Typed Inertia response for completed jobs
+type JobResponse = {
+    props: {
+        data: {
+            completed: PaginatedData<JobOpening>;
+        };
+    };
+};
+
+function JobsComplete({ jobs, jobClick }: Props) {
     const [data, setData] = useState<JobOpening[]>(jobs.data);
     const [page, setPage] = useState(jobs.current_page);
     const [hasMore, setHasMore] = useState(jobs.current_page < jobs.last_page);
@@ -22,33 +31,49 @@ function JobsComplete({ jobs ,jobClick}: Props) {
 
         setLoading(true);
 
-        router.get(route("jobopenings.index", { status: "completed", page: page + 1 }), {}, {
-            preserveScroll: true,
-            preserveState: true,
-            only: ['data'],
-            onSuccess: (response) => {
-                const newJobs = response.props.data.completed.data;
+        router.get(
+            route("jobopenings.index", { status: "completed", page: page + 1 }),
+            {},
+            {
+                preserveScroll: true,
+                preserveState: true,
+                only: ['data'],
 
-                setData(prevData => [...prevData, ...newJobs]);
-                setPage(response.props.data.completed.current_page);
-                setHasMore(response.props.data.completed.current_page < response.props.data.completed.last_page);
-            },
-            onFinish: () => setLoading(false),
-        });
+                onSuccess: (response) => {
+                    // ⬅ IMPORTANT: cast unknown Inertia response
+                    const res = response as unknown as JobResponse;
+
+                    const newJobs = res.props.data.completed.data;
+
+                    setData(prev => [...prev, ...newJobs]);
+                    setPage(res.props.data.completed.current_page);
+                    setHasMore(
+                        res.props.data.completed.current_page <
+                        res.props.data.completed.last_page
+                    );
+                },
+
+                onFinish: () => setLoading(false),
+            }
+        );
     };
+
     useEffect(() => {
-        setData(jobs.data)
+        setData(jobs.data);
+        setPage(jobs.current_page);
+        setHasMore(jobs.current_page < jobs.last_page);
     }, [jobs]);
+
     return (
-        <Card title="Completed Jobs">
-            <div id="scrollableDiv-completed" style={{ height: 600, overflow: 'auto', margin: 0, padding: 0 }}>
+        <Card title="Completed Jobs" style={{ margin: 0, padding: 0 }}>
+            <div id="scrollableDiv-complete" style={{ height: 600, overflow: 'auto' }}>
                 <InfiniteScroll
                     dataLength={data.length}
                     next={loadMoreData}
                     hasMore={hasMore}
                     loader={<Skeleton avatar paragraph={{ rows: 1 }} active />}
-                    endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
-                    scrollableTarget="scrollableDiv-completed"
+                    endMessage={<Divider plain>No more completed jobs 🎉</Divider>}
+                    scrollableTarget="scrollableDiv-complete"
                 >
                     <List
                         dataSource={data}

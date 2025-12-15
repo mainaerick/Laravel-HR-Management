@@ -12,15 +12,13 @@ type Props = {
     auth: any, filters:any,data:any
 }
 function Index({auth,data,filters}:Props) {
-
     let departments:Department[] = data.data
-
     let queryParams = {
         per_page: data.per_page,
         page: data.current_page,
         search: filters.search,
     }
-    const onSearch = (e) => {
+    const onSearch = (e:any) => {
         const value = e.target.value
         if (value) {
             queryParams.search = value
@@ -80,7 +78,7 @@ function Index({auth,data,filters}:Props) {
                                     <List.Item key={index}>
                                         <List.Item.Meta
                                             avatar={<Avatar src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`} />}
-                                            title={<a href="https://ant.design">{`${item.first_name} ${item.last_name} `}</a>}
+                                            title={<a href="employees/1">{`${item.first_name} ${item.last_name} `}</a>}
                                             description={item.designation}
                                         />
                                     </List.Item>
@@ -95,5 +93,4 @@ function Index({auth,data,filters}:Props) {
         </AuthenticatedLayout>
     );
 }
-
 export default Index;

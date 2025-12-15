@@ -8,6 +8,7 @@ import { JobOpening, JobOpeningsResponse } from "@/Pages/JobOpenings/Core/Model"
 import JobsComplete from "@/Pages/JobOpenings/Components/JobsComplete";
 import JobsInActive from "@/Pages/JobOpenings/Components/JobsInActive";
 import JobsActive from "@/Pages/JobOpenings/Components/JobsActive";
+import axios, {Method} from "axios";
 
 type Props = {
     groupeddata: JobOpeningsResponse;
@@ -19,18 +20,18 @@ type Props = {
 function JobsListing({ groupeddata, filters, departments, passed_params }: Props) {
     const [messageApi, contextHolder] = message.useMessage();
     const [modalOpen, setModalOpen] = useState(false);
-    const [editingJob, setEditingJob] = useState<JobOpening | null>(null);
+    const [editingJob, setEditingJob] = useState<JobOpening | undefined>(undefined);
     const [groupedDataState, setGroupedDataState] = useState(groupeddata);
     const { data, setData, post, put, processing, errors } = useForm<JobOpening | any>({});
 
     const openCreateModal = () => {
-        setEditingJob(null);
+        setEditingJob(undefined);
         setModalOpen(true);
     };
 
-    const openEditModal = (jobID: number) => {
+    const openEditModal = (jobID: number|string) => {
         axios.get(route("jobopening.edit", { id: jobID }))
-            .then((response) => {
+            .then((response:any) => {
                 setEditingJob(response.data);
                 setData(response.data);
                 setModalOpen(true);
@@ -41,7 +42,7 @@ function JobsListing({ groupeddata, filters, departments, passed_params }: Props
     };
 
     const handleSubmit = () => {
-        const method = editingJob ? "PUT" : "POST";
+        const method: any = editingJob ? "PUT" : "POST";
         const routeName = editingJob ? route("jobopening.update", { id: editingJob.id }) : route("jobopening.store");
 
         const request = editingJob ? put : post;

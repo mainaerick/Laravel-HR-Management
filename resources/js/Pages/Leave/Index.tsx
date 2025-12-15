@@ -47,7 +47,7 @@ function Index({leavedata,filters}:Props) {
         {
             title: "Employee",
             key: "employee",
-            render: (_, record) => `${record.employee?.first_name ?? ''} ${record.employee?.last_name ?? ''}`,
+            render: (_:any, record:any) => `${record.employee?.first_name ?? ''} ${record.employee?.last_name ?? ''}`,
 
         },
 
@@ -78,7 +78,7 @@ function Index({leavedata,filters}:Props) {
         {
             title: "Actions",
             key: "actions",
-            render: (_, record) => (
+            render: (_:any, record:any) => (
               <Space>
                 <Button type="primary" onClick={() => {
                     setUpdateId(record.id)

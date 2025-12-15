@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import JobCard from "@/Pages/JobOpenings/Components/JobCard";
-import { Card, Divider, List, Skeleton } from "antd";
-import { JobOpening } from "@/Pages/JobOpenings/Core/Model";
+import {Card, Divider, List, Skeleton} from "antd";
+import {JobOpening} from "@/Pages/JobOpenings/Core/Model";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { router } from "@inertiajs/react";
-import { PaginatedData } from "@/Core/Models";
+import {router} from "@inertiajs/react";
+import {PaginatedData} from "@/Core/Models";
 
 type Props = {
     jobs: PaginatedData;
-    jobClick: (jobId: number) => void;
+    jobClick: (jobId: number | string) => void;
 };
 
-function JobsInActive({ jobs, jobClick }: Props) {
+function JobsInActive({jobs, jobClick}: Props) {
     const [data, setData] = useState<JobOpening[]>(jobs.data);
     const [page, setPage] = useState(jobs.current_page);
     const [hasMore, setHasMore] = useState(jobs.current_page < jobs.last_page);
@@ -23,18 +23,24 @@ function JobsInActive({ jobs, jobClick }: Props) {
         setLoading(true);
 
         router.get(
-            route("jobopenings.index", { status: "inactive", page: page + 1 }),
+            route("jobopenings.index", {status: "inactive", page: page + 1}),
             {},
             {
                 preserveScroll: true,
                 preserveState: true,
                 only: ['jobs'], // Ensure we are only updating jobs to prevent unnecessary re-renders
                 onSuccess: (response) => {
-                    const newJobs = response.props.jobs.data; // Ensure correct data extraction
+                    if (response.props.jobs && typeof response.props.jobs === 'object' && 'current_page' in response.props.jobs && 'data' in response.props.jobs &&'last_page' in response.props.jobs) {
+                        const newJobs = response.props.jobs.data as any; // Ensure correct data extraction
 
-                    setData(prevData => [...prevData, ...newJobs]);
-                    setPage(response.props.jobs.current_page);
-                    setHasMore(response.props.jobs.current_page < response.props.jobs.last_page);
+                        setData(prevData => [...prevData, ...newJobs]);
+                        setPage(response.props.jobs.current_page as any);
+                        setHasMore((response.props.jobs.current_page as any) < (response.props.jobs.last_page as any));
+                    } else {
+                        // Handle the case where jobs is not in the expected format
+                        setHasMore(false);
+                    }
+                    // setHasMore(response.props.jobs.current_page as any < response.props.jobs.last_page as any);
                 },
                 onFinish: () => setLoading(false),
             }
@@ -49,12 +55,12 @@ function JobsInActive({ jobs, jobClick }: Props) {
 
     return (
         <Card title="Inactive Jobs">
-            <div id="scrollableDiv-inactive" style={{ maxHeight: "70vh", overflowY: "auto", padding: "10px" }}>
+            <div id="scrollableDiv-inactive" style={{maxHeight: "70vh", overflowY: "auto", padding: "10px"}}>
                 <InfiniteScroll
                     dataLength={data.length}
                     next={loadMoreData}
                     hasMore={hasMore}
-                    loader={<Skeleton avatar paragraph={{ rows: 1 }} active />}
+                    loader={<Skeleton avatar paragraph={{rows: 1}} active/>}
                     endMessage={<Divider plain>No more inactive jobs 🤐</Divider>}
                     scrollableTarget="scrollableDiv-inactive"
                 >

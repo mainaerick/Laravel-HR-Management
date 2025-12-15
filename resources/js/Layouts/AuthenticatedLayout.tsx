@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Layout, Menu, Button, Drawer, Row, Col, Flex } from "antd";
+import React, {useState} from "react";
+import {Layout, Menu, Button, Drawer, Row, Col, Flex} from "antd";
 import {
     MenuUnfoldOutlined,
     MenuFoldOutlined,
@@ -15,15 +15,20 @@ import {
     SettingOutlined,
     BellOutlined
 } from "@ant-design/icons";
-import { usePage, router } from "@inertiajs/react";
+import {usePage, router} from "@inertiajs/react";
 import Dropdown from "@/Components/Dropdown";
 import HRLogo from "@/Layouts/HRLogo";
 
-const { Header, Sider, Content, Footer } = Layout;
+const {Header, Sider, Content, Footer} = Layout;
 
-export default function Authenticated({ header, children }) {
+interface AuthenticatedLayoutProps {
+    header?: React.JSX.Element
+    children: React.ReactNode
+}
+
+export default function Authenticated({ children, header}: AuthenticatedLayoutProps) {
     const user = usePage().props.auth.user;
-    const { ziggy } = usePage().props;
+    const {ziggy} = usePage().props;
 
     const [collapsed, setCollapsed] = useState(false);
     const [drawerVisible, setDrawerVisible] = useState(false);
@@ -33,38 +38,41 @@ export default function Authenticated({ header, children }) {
     const toggleSidebar = () => setCollapsed(!collapsed);
     const toggleDrawer = () => setDrawerVisible(!drawerVisible);
 
-    const onClick = (e) => {
+    const onClick = (e: any) => {
         router.get(route(`${e.key}.index`));
         setDrawerVisible(false);
     };
 
     const menuItems = [
-        { key: "dashboard", icon: <AppstoreOutlined />, label: "Dashboard" },
-        { key: "employees", icon: <TeamOutlined />, label: "All Employees" },
-        { key: "departments", icon: <ApartmentOutlined />, label: "All Departments" },
-        { key: "attendance", icon: <ScheduleOutlined />, label: "Attendance" },
-        { key: "payroll", icon: <DollarOutlined />, label: "Payroll" },
-        { key: "jobopenings", icon: <LaptopOutlined />, label: "Jobs" },
-        { key: "candidates", icon: <SolutionOutlined />, label: "Candidates" },
-        { key: "leaves", icon: <ProfileOutlined />, label: "Leaves" },
-        { key: "holiday", icon: <CarryOutOutlined />, label: "Holiday" },
-        { key: "settings", icon: <SettingOutlined />, label: "Settings" },
+        {key: "dashboard", icon: <AppstoreOutlined/>, label: "Dashboard"},
+        {key: "employees", icon: <TeamOutlined/>, label: "All Employees"},
+        {key: "departments", icon: <ApartmentOutlined/>, label: "All Departments"},
+        {key: "attendance", icon: <ScheduleOutlined/>, label: "Attendance"},
+        {key: "payroll", icon: <DollarOutlined/>, label: "Payroll"},
+        {key: "jobopenings", icon: <LaptopOutlined/>, label: "Jobs"},
+        {key: "candidates", icon: <SolutionOutlined/>, label: "Candidates"},
+        {key: "leaves", icon: <ProfileOutlined/>, label: "Leaves"},
+        {key: "holiday", icon: <CarryOutOutlined/>, label: "Holiday"},
+        {key: "settings", icon: <SettingOutlined/>, label: "Settings"},
     ];
 
     return (
-        <Layout style={{ minHeight: "100vh", background: "#FFFFFF" }}>
+        <Layout style={{minHeight: "100vh", background: "#FFFFFF"}}>
             {/* Sidebar for Desktop */}
             <Sider
                 collapsible
                 collapsed={collapsed}
                 onCollapse={toggleSidebar}
-                className="hidden md:block bg-gray-100 m-2 rounded-lg"
+                theme={"light"}
+                className="hidden md:block m-3 rounded-lg"
+                style={{backgroundColor: "#f5f5f6"}}
             >
-                <div className="logo m-3 hidden md:flex" >
-                    <HRLogo />
+                <div className="logo m-3 hidden md:flex">
+                    <HRLogo/>
                 </div>
                 <Menu
-                    className="bg-gray-100 pt-6"
+                    className="md:block  pt-6"
+                    style={{backgroundColor: "#f5f5f6"}}
                     mode="inline"
                     selectedKeys={[selectedKey]}
                     onClick={onClick}
@@ -79,12 +87,12 @@ export default function Authenticated({ header, children }) {
 
             {/* Mobile Sidebar (Drawer) */}
             <Drawer
-                title={<HRLogo />}
+                title={<HRLogo/>}
                 placement="left"
                 closable
                 onClose={toggleDrawer}
                 visible={drawerVisible}
-                bodyStyle={{ padding: 0 }}
+                bodyStyle={{padding: 0}}
             >
                 <Menu mode="inline" selectedKeys={[selectedKey]} onClick={onClick}>
                     {menuItems.map(item => (
@@ -95,20 +103,20 @@ export default function Authenticated({ header, children }) {
                 </Menu>
             </Drawer>
 
-            <Layout className="pt-6" style={{ background: "#FFFFFF" }}>
+            <Layout className="pt-6" style={{background: "#FFFFFF"}}>
                 <Header className="bg-white p-4 flex items-center justify-between">
                     <div className={"flex justify-between  items-center"}>
                         {/* Sidebar Toggle for Mobile */}
                         <Button
                             type="text"
-                            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+                            icon={collapsed ? <MenuUnfoldOutlined/> : <MenuFoldOutlined/>}
                             onClick={toggleSidebar}
                             className="hidden md:inline-block"
                         />
 
                         <Button
                             type="text"
-                            icon={<MenuUnfoldOutlined />}
+                            icon={<MenuUnfoldOutlined/>}
                             onClick={toggleDrawer}
                             className="md:hidden"
                         />
@@ -117,12 +125,12 @@ export default function Authenticated({ header, children }) {
                     </div>
 
 
-
                     <Flex justify="end" align="center">
-                        <BellOutlined className="p-2 bg-gray-200 rounded-md text-lg hidden sm:block" />
+                        <BellOutlined className="p-2 bg-gray-200 rounded-md text-lg hidden sm:block"/>
                         <Dropdown>
                             <Dropdown.Trigger>
-                                <button className="ml-4 flex items-center bg-white px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 focus:outline-none">
+                                <button
+                                    className="ml-4 flex items-center bg-white px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 focus:outline-none">
                                     {user.name}
                                     <svg
                                         className="ml-2 h-4 w-4"
@@ -152,7 +160,7 @@ export default function Authenticated({ header, children }) {
                     {children}
                 </Content>
 
-                <Footer style={{ textAlign: "center", background: "#FFFFFF" }}>
+                <Footer style={{textAlign: "center", background: "#FFFFFF"}}>
                     HR ©{new Date().getFullYear()} Created by DevRick
                 </Footer>
             </Layout>

@@ -42,17 +42,17 @@ function JobCard({ jobId, department, e_type, title, location, salary, city, job
             <Row gutter={[8, 8]} style={{ marginTop: "20px", marginBottom: "20px" }} justify="center">
                 {department && (
                     <Col>
-                        <Button style={buttonStyle}>{department}</Button>
+                        <Button style={buttonStyle as any}>{department}</Button>
                     </Col>
                 )}
                 {e_type && (
                     <Col>
-                        <Button style={buttonStyle}>{e_type}</Button>
+                        <Button style={buttonStyle as any}>{e_type}</Button>
                     </Col>
                 )}
                 {location && (
                     <Col>
-                        <Button style={buttonStyle}>{location}</Button>
+                        <Button style={buttonStyle as any}>{location}</Button>
                     </Col>
                 )}
             </Row>

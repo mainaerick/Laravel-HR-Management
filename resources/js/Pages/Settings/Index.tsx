@@ -5,12 +5,8 @@ import { MoonOutlined, SunOutlined } from "@ant-design/icons";
 import { useForm } from "@inertiajs/react";
 import { JobOpening } from "@/Pages/JobOpenings/Core/Model";
 
-const { useBreakpoint } = Grid;
 
-function Index(props) {
-    const [messageApi, contextHolder] = message.useMessage();
-    const screens = useBreakpoint();
-
+function Index() {
     const [theme, setTheme] = useState("light");
     const [language, setLanguage] = useState("English");
     const [notifications, setNotifications] = useState({
@@ -18,20 +14,7 @@ function Index(props) {
         desktop: true,
         email: true,
     });
-    const { data, setData, put, processing, errors } = useForm<JobOpening | any>({});
 
-    const updateSetting = (key, value) => {
-        put(route("settings.update", { key }), {
-            value,
-            onSuccess: () => {
-                message.success("Setting updated successfully!");
-            },
-            onError: (error) => {
-                message.error("Failed to update setting.");
-                console.error(error);
-            },
-        });
-    };
 
     return (
         <AuthenticatedLayout

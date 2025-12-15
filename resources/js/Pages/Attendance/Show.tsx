@@ -29,6 +29,7 @@ function Show({department,employees,filters}:Props) {
             }
         >
 
+            <span>Hello</span>
         </AuthenticatedLayout>
     );
 }

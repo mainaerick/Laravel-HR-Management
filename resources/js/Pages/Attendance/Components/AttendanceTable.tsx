@@ -43,7 +43,7 @@ function AttendanceTable({ data, filters, passed_params, route_redirect, columns
         router.get(route(route_redirect, passed_params?.id ? { id: passed_params.id } : {}), queryParams, { preserveScroll: true });
     };
 
-    const onSearch = (e) => {
+    const onSearch = (e:any) => {
         const value = e.target.value;
         if (value) {
             queryParams.search = value;

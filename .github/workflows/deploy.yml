@@ -230,7 +230,7 @@ jobs:
           sleep 25
 
           echo "🔐 Fixing ownership for container..."
-          ./vendor/bin/sail exec -u root  mobilia_app chown -R sail:sail /var/www/html
+          ./vendor/bin/sail exec -u root  hr_app chown -R sail:sail /var/www/html
 
           echo "📦 Installing production dependencies in container..."
           ./vendor/bin/sail composer install --optimize-autoloader --no-interaction

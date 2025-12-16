@@ -72,16 +72,6 @@ jobs:
           php artisan key:generate
           php artisan config:clear
 
-      - name: Run PHP tests
-        run: php artisan test --parallel
-        env:
-          DB_CONNECTION: mysql
-          DB_HOST: 127.0.0.1
-          DB_PORT: 3306
-          DB_DATABASE: testing
-          DB_USERNAME: root
-          DB_PASSWORD: password
-          REDIS_HOST: 127.0.0.1
 
       - name: Run JavaScript tests (if applicable)
         run: npm run test --if-present

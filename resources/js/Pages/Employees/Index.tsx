@@ -10,7 +10,7 @@ type Props = { auth: any, employees: any,filters:any,departments:Department[] }
 
 function Index({auth, employees,filters,departments}: Props) {
 
-    console.log(auth, employees);
+
     return (
         <AuthenticatedLayout
             header={

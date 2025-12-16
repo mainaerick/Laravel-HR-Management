@@ -22,7 +22,7 @@ function Index({auth,data,filters,departments,jobOpening}:Props) {
 
     let jobs:JobOpening[] = data?.data
 
-    console.log(data)
+
     return (
         <AuthenticatedLayout
             header={

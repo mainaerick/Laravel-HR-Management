@@ -63,9 +63,7 @@ function JobsListing({ groupeddata, filters, departments, passed_params }: Props
         });
     };
 
-    useEffect(() => {
-        console.log(groupedDataState);
-    }, [groupedDataState]);
+
 
     return (
         <Card className="mr-6" style={{ borderRadius: "10px" }}>
